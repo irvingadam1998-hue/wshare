@@ -16,12 +16,10 @@ const upload = multer({
   limits: { fileSize: 50 * 1024 * 1024 }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 // ── Restricción de red local ──
 function isLocalNetwork(clientIp) {
-  // Si está desplegado con dominio público (Railway, etc.), no aplicar restricción
-  if (process.env.RAILWAY_PUBLIC_DOMAIN || process.env.HOST) return true;
+  // Solo omitir restricción si hay un dominio público de Railway explícito
+  if (process.env.RAILWAY_PUBLIC_DOMAIN) return true;
 
   const normalize = ip => ip.replace(/^::ffff:/, '');
   const client = normalize(clientIp || '');
@@ -42,10 +40,12 @@ function isLocalNetwork(clientIp) {
 app.use((req, res, next) => {
   const clientIp = req.ip || req.socket.remoteAddress || '';
   if (!isLocalNetwork(clientIp)) {
-    return res.status(403).json({ error: 'Acceso permitido solo desde la red local.' });
+    return res.status(403).send('Acceso permitido solo desde la red local WiFi.');
   }
   next();
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // List
 app.get('/api/files', (req, res) => {
