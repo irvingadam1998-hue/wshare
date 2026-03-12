@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 // Archivos en memoria — se pierden al reiniciar
 const files = new Map(); // name -> { name, buffer, size, mtime }
+const clips = new Map(); // id -> { id, text, mtime }
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -16,6 +17,35 @@ const upload = multer({
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ── Restricción de red local ──
+function isLocalNetwork(clientIp) {
+  // Si está desplegado con dominio público (Railway, etc.), no aplicar restricción
+  if (process.env.RAILWAY_PUBLIC_DOMAIN || process.env.HOST) return true;
+
+  const normalize = ip => ip.replace(/^::ffff:/, '');
+  const client = normalize(clientIp || '');
+
+  // Permitir loopback
+  if (client === '127.0.0.1' || client === '::1') return true;
+
+  const serverIp = getLocalIP();
+  const sp = serverIp.split('.');
+  const cp = client.split('.');
+
+  if (cp.length !== 4) return false;
+
+  // Misma subred /24
+  return sp[0] === cp[0] && sp[1] === cp[1] && sp[2] === cp[2];
+}
+
+app.use((req, res, next) => {
+  const clientIp = req.ip || req.socket.remoteAddress || '';
+  if (!isLocalNetwork(clientIp)) {
+    return res.status(403).json({ error: 'Acceso permitido solo desde la red local.' });
+  }
+  next();
+});
 
 // List
 app.get('/api/files', (req, res) => {
@@ -56,6 +86,29 @@ app.get('/api/download/:filename', (req, res) => {
 app.delete('/api/files/:filename', (req, res) => {
   if (!files.has(req.params.filename)) return res.status(404).json({ error: 'Not found' });
   files.delete(req.params.filename);
+  res.json({ ok: true });
+});
+
+// Text clips
+app.use(express.json());
+
+app.get('/api/clips', (req, res) => {
+  res.json([...clips.values()].map(({ id, text, mtime }) => ({ id, text, mtime })));
+});
+
+
+app.post('/api/clips', (req, res) => {
+  const text = (req.body.text || '').trim();
+  if (!text) return res.status(400).json({ error: 'Texto vacío' });
+  if (text.length > 10000) return res.status(400).json({ error: 'Texto muy largo (máx 10 000 caracteres)' });
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  clips.set(id, { id, text, mtime: new Date() });
+  res.json({ ok: true, id });
+});
+
+app.delete('/api/clips/:id', (req, res) => {
+  if (!clips.has(req.params.id)) return res.status(404).json({ error: 'Not found' });
+  clips.delete(req.params.id);
   res.json({ ok: true });
 });
 
