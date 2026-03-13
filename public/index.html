@@ -567,7 +567,11 @@
   let myDeviceId  = localStorage.getItem('wshare-deviceId');
   let myEmoji     = localStorage.getItem('wshare-emoji') || '··';
   let selectedId  = null;
-  let knownInbox  = new Set();
+
+  // WebRTC
+  const STUN = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+  const peerConnections = new Map(); // peerId → RTCPeerConnection
+  const pendingFiles    = new Map(); // peerId → File[]
 
   // ── Registro ──
   async function register() {
@@ -711,7 +715,62 @@
     if (files.length) sendFiles(files, id);
   }
 
-  // ── Enviar archivos ──
+  // ── WebRTC: señalización via SSE ──
+  function connectEvents() {
+    const es = new EventSource(`/api/events?deviceId=${myDeviceId}`);
+    es.onmessage = async (e) => {
+      const { from, type, data } = JSON.parse(e.data);
+
+      if (type === 'offer') {
+        const pc = createPC(from, false);
+        await pc.setRemoteDescription(data);
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        signal(from, 'answer', pc.localDescription);
+      }
+      if (type === 'answer') {
+        const pc = peerConnections.get(from);
+        if (pc) await pc.setRemoteDescription(data);
+      }
+      if (type === 'ice') {
+        const pc = peerConnections.get(from);
+        if (pc && data) await pc.addIceCandidate(data).catch(() => {});
+      }
+    };
+    es.onerror = () => setTimeout(connectEvents, 3000);
+  }
+
+  function createPC(peerId, initiator) {
+    const pc = new RTCPeerConnection(STUN);
+    peerConnections.set(peerId, pc);
+
+    pc.onicecandidate = ({ candidate }) => {
+      if (candidate) signal(peerId, 'ice', candidate);
+    };
+    pc.onconnectionstatechange = () => {
+      if (['failed','closed','disconnected'].includes(pc.connectionState))
+        peerConnections.delete(peerId);
+    };
+
+    if (initiator) {
+      const dc = pc.createDataChannel('files', { ordered: true });
+      dc.onopen  = () => sendQueued(dc, peerId);
+      dc.onerror = () => { hideOverlay(); toast('error en la transferencia'); };
+    } else {
+      pc.ondatachannel = (e) => receiveOn(e.channel);
+    }
+    return pc;
+  }
+
+  async function signal(to, type, data) {
+    await fetch('/api/signal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to, from: myDeviceId, type, data })
+    });
+  }
+
+  // ── Enviar archivos (WebRTC P2P — nunca pasan por el servidor) ──
   document.getElementById('file-input').addEventListener('change', e => {
     const files = [...e.target.files];
     e.target.value = '';
@@ -720,40 +779,82 @@
   });
 
   async function sendFiles(files, targetId) {
-    const overlay = document.getElementById('upload-overlay');
-    const pct     = document.getElementById('upload-pct');
-    const lbl     = document.getElementById('upload-label');
-
-    overlay.classList.add('open');
-    pct.textContent = '0%';
-    lbl.textContent = `enviando ${files.length} archivo${files.length > 1 ? 's' : ''}…`;
-
-    const form = new FormData();
-    files.forEach(f => form.append('files', f));
-    form.append('fromId', myDeviceId);
-
-    return new Promise(resolve => {
-      const xhr = new XMLHttpRequest();
-      xhr.upload.addEventListener('progress', e => {
-        if (e.lengthComputable)
-          pct.textContent = Math.round(e.loaded / e.total * 100) + '%';
-      });
-      xhr.onload = () => {
-        overlay.classList.remove('open');
-        const res = JSON.parse(xhr.responseText);
-        if (res.error) { toast(res.error); return resolve(); }
-        toast('enviado ✓');
-        resolve();
-      };
-      xhr.open('POST', `/api/send/${targetId}`);
-      xhr.send(form);
-    });
+    pendingFiles.set(targetId, files);
+    showOverlay(`conectando con dispositivo…`, '');
+    const pc = createPC(targetId, true);
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    signal(targetId, 'offer', pc.localDescription);
   }
 
-  // ── Inbox ──
-  async function loadInbox() {
-    const items = await fetch(`/api/inbox?deviceId=${myDeviceId}`).then(r => r.json());
-    return items;
+  async function sendQueued(dc, peerId) {
+    const files = pendingFiles.get(peerId) || [];
+    pendingFiles.delete(peerId);
+    const total = files.reduce((s, f) => s + f.size, 0);
+    let sent = 0;
+
+    for (const file of files) {
+      showOverlay(`enviando ${file.name}`, '0%');
+      dc.send(JSON.stringify({ type: 'meta', name: file.name, size: file.size }));
+
+      const buf = await file.arrayBuffer();
+      const CHUNK = 64 * 1024;
+      let offset = 0;
+      while (offset < buf.byteLength) {
+        while (dc.bufferedAmount > 4 * 1024 * 1024)
+          await new Promise(r => setTimeout(r, 30));
+        const end   = Math.min(offset + CHUNK, buf.byteLength);
+        dc.send(buf.slice(offset, end));
+        offset = end;
+        sent  += (end - (offset - (end - offset > 0 ? end - offset : 0)));
+        document.getElementById('upload-pct').textContent =
+          Math.round(offset / buf.byteLength * 100) + '%';
+      }
+      dc.send(JSON.stringify({ type: 'done' }));
+    }
+
+    hideOverlay();
+    toast('enviado ✓');
+    dc.close();
+    peerConnections.get(peerId)?.close();
+    peerConnections.delete(peerId);
+  }
+
+  // ── Recibir archivos (el archivo llega directo del otro navegador) ──
+  function receiveOn(dc) {
+    let state = null;
+    dc.onmessage = (e) => {
+      if (typeof e.data === 'string') {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'meta') {
+          state = { name: msg.name, size: msg.size, chunks: [], got: 0 };
+          showOverlay(`recibiendo ${msg.name}`, '0%');
+        } else if (msg.type === 'done' && state) {
+          const blob = new Blob(state.chunks);
+          const url  = URL.createObjectURL(blob);
+          const a    = document.createElement('a');
+          a.href = url; a.download = state.name; a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          hideOverlay();
+          toast(`📥 ${state.name}`);
+          state = null;
+        }
+      } else if (state) {
+        state.chunks.push(e.data);
+        state.got += e.data.byteLength;
+        document.getElementById('upload-pct').textContent =
+          Math.round(state.got / state.size * 100) + '%';
+      }
+    };
+  }
+
+  function showOverlay(label, pct) {
+    document.getElementById('upload-overlay').classList.add('open');
+    document.getElementById('upload-label').textContent = label;
+    document.getElementById('upload-pct').textContent   = pct;
+  }
+  function hideOverlay() {
+    document.getElementById('upload-overlay').classList.remove('open');
   }
 
   // ── Clips ──
@@ -770,62 +871,24 @@
     toast('texto compartido en la red');
   });
 
-  async function loadClips() {
-    return fetch('/api/clips').then(r => r.json());
-  }
-
-  // ── Render combinado ──
   async function loadAll() {
-    const [inbox, clips] = await Promise.all([loadInbox(), loadClips()]);
-    renderAll(inbox, clips);
+    const clips = await fetch('/api/clips').then(r => r.json());
+    renderClips(clips);
   }
 
-  function renderAll(inbox, clips) {
-    const row = document.getElementById('pills-row');
-    const items = [];
-
-    // Detectar archivos nuevos
-    const newIds = inbox.map(f => f.id).filter(id => !knownInbox.has(id));
-    inbox.forEach(f => knownInbox.add(f.id));
-    if (newIds.length) toast(`📥 ${newIds.length} archivo${newIds.length > 1 ? 's' : ''} recibido${newIds.length > 1 ? 's' : ''}`);
-
-    inbox.forEach(f => {
-      items.push(`
-        <div class="file-pill" onclick="downloadInboxFile('${esc(f.id)}')">
-          <span class="pill-from">${f.fromEmoji}</span>
-          <div class="pill-info">
-            <div class="pill-name" title="${escHtml(f.name)}">${escHtml(f.name)}</div>
-            <div class="pill-size">${formatSize(f.size)}</div>
-          </div>
-          <button class="pill-del" onclick="event.stopPropagation();deleteInboxFile('${esc(f.id)}')">✕</button>
-        </div>
-      `);
-    });
-
-    clips.forEach(c => {
-      items.push(`
-        <div class="clip-pill" onclick="copyClip('${esc(c.text)}')" title="Click para copiar">
-          <span class="clip-icon">¶</span>
-          <span class="clip-text">${escHtml(c.text)}</span>
-          <button class="clip-del" onclick="event.stopPropagation();deleteClip('${c.id}')">✕</button>
-        </div>
-      `);
-    });
-
+  function renderClips(clips) {
+    const row   = document.getElementById('pills-row');
+    const items = clips.map(c => `
+      <div class="clip-pill" onclick="copyClip('${esc(c.text)}')" title="Click para copiar">
+        <span class="clip-icon">¶</span>
+        <span class="clip-text">${escHtml(c.text)}</span>
+        <button class="clip-del" onclick="event.stopPropagation();deleteClip('${c.id}')">✕</button>
+      </div>
+    `);
     row.innerHTML = items.join('');
-    document.getElementById('stat-count').textContent = inbox.length;
+    document.getElementById('stat-count').textContent = clips.length;
   }
 
-  function downloadInboxFile(id) {
-    const a = document.createElement('a');
-    a.href = `/api/inbox/${id}/download?deviceId=${myDeviceId}`;
-    a.click();
-  }
-  async function deleteInboxFile(id) {
-    await fetch(`/api/inbox/${id}?deviceId=${myDeviceId}`, { method: 'DELETE' });
-    knownInbox.delete(id);
-    loadAll();
-  }
   function copyClip(text) {
     navigator.clipboard.writeText(text).then(() => toast('copiado al portapapeles'));
   }
@@ -901,6 +964,7 @@
   (async () => {
     await register();
     await loadQR();
+    connectEvents(); // SSE para señalización WebRTC
     await poll();
     setInterval(poll, 3000);
   })();
