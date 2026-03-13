@@ -466,6 +466,77 @@
     }
     .btn-close:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
 
+    /* ── Text panel ── */
+    #text-panel {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+      z-index: 100; align-items: flex-end; justify-content: center;
+    }
+    #text-panel.open { display: flex; }
+    .text-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0; padding: 20px 20px 28px;
+      width: 100%; max-width: 480px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .text-box-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .text-box-title { font-size: 0.8rem; font-weight: 500; color: var(--muted); }
+    .text-area {
+      width: 100%; min-height: 110px; max-height: 280px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px; resize: vertical;
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      line-height: 1.5; outline: none; transition: border-color 0.15s;
+    }
+    .text-area:focus { border-color: rgba(203,255,71,0.35); }
+    .text-area::placeholder { color: var(--muted); }
+    .text-actions { display: flex; gap: 8px; }
+    .btn-send {
+      flex: 1; padding: 10px; border-radius: 10px;
+      background: var(--accent); color: #000; border: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.84rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn-send:hover { opacity: 0.85; }
+    .btn-send:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── Received text panel ── */
+    #recv-panel {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+      z-index: 110; align-items: flex-end; justify-content: center;
+    }
+    #recv-panel.open { display: flex; }
+    .recv-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px 20px 0 0; padding: 20px 20px 28px;
+      width: 100%; max-width: 480px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .recv-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .recv-title { font-size: 0.8rem; font-weight: 500; color: var(--muted); }
+    .recv-content {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px;
+      font-size: 0.88rem; line-height: 1.6; color: var(--text);
+      max-height: 220px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-word;
+      user-select: text;
+    }
+    .btn-copy-big {
+      width: 100%; padding: 12px; border-radius: 10px;
+      background: var(--accent); color: #000; border: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s; display: flex;
+      align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn-copy-big:hover { opacity: 0.85; }
+    .btn-copy-big.copied { background: #4ade80; }
+
     /* ── Toast ── */
     #toast {
       position: fixed; bottom: 20px; left: 50%;
@@ -494,6 +565,7 @@
     </div>
     <div class="ip-badge" id="ip-badge" onclick="openQR()">···</div>
     <button class="ctrl-btn" onclick="openQR()" title="QR">⊞</button>
+    <button class="ctrl-btn" onclick="openText()" title="Compartir texto">¶</button>
     <button class="ctrl-btn accent" id="add-btn-header" onclick="onAddClick()" title="Enviar">+</button>
   </div>
 </header>
@@ -521,7 +593,7 @@
 
   <!-- Hint + botón agregar -->
   <div class="hint-block">
-    <span class="hint-text">arrastra · <span style="color:var(--accent);opacity:0.7">ctrl+v</span> texto</span>
+    <span class="hint-text">arrastra · <span style="color:var(--accent);opacity:0.7;cursor:pointer" onclick="openText()">texto ¶</span></span>
     <button class="add-btn" id="add-btn" onclick="onAddClick()">+</button>
   </div>
 
@@ -560,30 +632,68 @@
   </div>
 </div>
 
+<!-- Received text panel -->
+<div id="recv-panel" onclick="closeRecv()">
+  <div class="recv-box" onclick="event.stopPropagation()">
+    <div class="recv-header">
+      <span class="recv-title">📋 texto recibido</span>
+      <button class="btn-close" style="width:auto;padding:4px 10px;font-size:0.75rem" onclick="closeRecv()">✕</button>
+    </div>
+    <div class="recv-content" id="recv-content"></div>
+    <button class="btn-copy-big" id="recv-copy-btn" onclick="copyRecv()">
+      <span id="recv-copy-icon">⎘</span>
+      <span id="recv-copy-label">copiar texto</span>
+    </button>
+    <button class="btn-close" onclick="closeRecv()">cerrar</button>
+  </div>
+</div>
+
+<!-- Text panel -->
+<div id="text-panel" onclick="closeText()">
+  <div class="text-box" onclick="event.stopPropagation()">
+    <div class="text-box-header">
+      <span class="text-box-title" id="text-panel-title">enviar texto</span>
+      <button class="btn-close" style="width:auto;padding:4px 10px;font-size:0.75rem" onclick="closeText()">✕</button>
+    </div>
+    <textarea id="text-input" class="text-area" placeholder="escribe o pega el texto aquí…" maxlength="10000" rows="4"></textarea>
+    <div style="display:flex;justify-content:flex-end">
+      <span id="text-counter" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">0 / 10000</span>
+    </div>
+    <div class="text-actions">
+      <button class="btn-close" style="flex:none;width:auto;padding:10px 18px" onclick="closeText()">cancelar</button>
+      <button class="btn-send" id="text-send-btn" onclick="submitText()">enviar a la red</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
   // ── Estado ──
-  let myDeviceId  = localStorage.getItem('wshare-deviceId');
-  let myEmoji     = localStorage.getItem('wshare-emoji') || '··';
-  let selectedId  = null;
+  let myDeviceId = localStorage.getItem('wshare-deviceId');
+  let myToken    = localStorage.getItem('wshare-token');
+  let myEmoji    = localStorage.getItem('wshare-emoji') || '··';
+  let selectedId = null;
 
   // WebRTC
   const STUN = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-  const peerConnections = new Map(); // peerId → RTCPeerConnection
-  const pendingFiles    = new Map(); // peerId → File[]
+  const peerConnections = new Map();
+  const pendingFiles    = new Map();
+  const pendingTexts    = new Map();
 
   // ── Registro ──
   async function register() {
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ deviceId: myDeviceId })
+      body: JSON.stringify({ deviceId: myDeviceId, token: myToken })
     }).then(r => r.json());
 
     myDeviceId = res.deviceId;
+    myToken    = res.token;
     myEmoji    = res.emoji;
     localStorage.setItem('wshare-deviceId', myDeviceId);
+    localStorage.setItem('wshare-token',    myToken);
     localStorage.setItem('wshare-emoji',    myEmoji);
     document.getElementById('my-emoji').textContent = myEmoji;
   }
@@ -650,10 +760,15 @@
   function selectDevice(id, emoji) {
     selectedId = id;
     updateCenterIcon(emoji);
-    // Re-render devices para mostrar selección
-    loadDevices();
+    // Re-render inmediato sin fetch para evitar race condition con el file picker
+    document.querySelectorAll('.device-bubble').forEach(el => {
+      el.classList.toggle('selected', el.id === 'dev-' + id);
+      el.querySelector('.device-tag').textContent = el.id === 'dev-' + id ? 'seleccionado' : 'enviar';
+    });
     // Abrir selector de archivos
-    document.getElementById('file-input').click();
+    const input = document.getElementById('file-input');
+    input.value = '';
+    input.click();
   }
 
   function updateCenterIcon(emoji) {
@@ -671,7 +786,21 @@
   // ── Botón + ──
   function onAddClick() {
     if (!selectedId) { toast('toca un dispositivo primero'); return; }
-    document.getElementById('file-input').click();
+    const input = document.getElementById('file-input');
+    input.value = '';
+    input.click();
+  }
+
+  // ── Validación de tamaño ──
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+  function validateFiles(files) {
+    const oversized = files.filter(f => f.size > MAX_FILE_SIZE);
+    if (oversized.length) {
+      const names = oversized.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)`).join(', ');
+      toast(`archivo demasiado grande (máx 50 MB): ${names}`);
+      return false;
+    }
+    return true;
   }
 
   // ── Drag sobre drop-zone central ──
@@ -684,6 +813,7 @@
     const files = [...e.dataTransfer.files];
     if (!files.length) return;
     if (!selectedId) { toast('toca un dispositivo primero'); return; }
+    if (!validateFiles(files)) return;
     sendFiles(files, selectedId);
   });
   zone.addEventListener('click', () => onAddClick());
@@ -696,6 +826,7 @@
     const files = [...e.dataTransfer.files];
     if (!files.length) return;
     if (!selectedId) { toast('toca un dispositivo primero'); return; }
+    if (!validateFiles(files)) return;
     sendFiles(files, selectedId);
   });
 
@@ -712,12 +843,14 @@
     e.stopPropagation();
     onDragLeave(id);
     const files = [...e.dataTransfer.files];
-    if (files.length) sendFiles(files, id);
+    if (!files.length) return;
+    if (!validateFiles(files)) return;
+    sendFiles(files, id);
   }
 
   // ── WebRTC: señalización via SSE ──
   function connectEvents() {
-    const es = new EventSource(`/api/events?deviceId=${myDeviceId}`);
+    const es = new EventSource(`/api/events?deviceId=${myDeviceId}&token=${myToken}`);
     es.onmessage = async (e) => {
       const { from, type, data } = JSON.parse(e.data);
 
@@ -755,7 +888,7 @@
     if (initiator) {
       const dc = pc.createDataChannel('files', { ordered: true });
       dc.onopen  = () => sendQueued(dc, peerId);
-      dc.onerror = () => { hideOverlay(); toast('error en la transferencia'); };
+      dc.onerror = () => { pendingFiles.delete(peerId); hideOverlay(); toast('error en la transferencia'); };
     } else {
       pc.ondatachannel = (e) => receiveOn(e.channel);
     }
@@ -766,7 +899,7 @@
     await fetch('/api/signal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to, from: myDeviceId, type, data })
+      body: JSON.stringify({ to, from: myDeviceId, token: myToken, type, data })
     });
   }
 
@@ -775,6 +908,7 @@
     const files = [...e.target.files];
     e.target.value = '';
     if (!files.length || !selectedId) return;
+    if (!validateFiles(files)) return;
     sendFiles(files, selectedId);
   });
 
@@ -787,7 +921,29 @@
     signal(targetId, 'offer', pc.localDescription);
   }
 
+  async function sendText(text, targetId) {
+    pendingTexts.set(targetId, text);
+    showOverlay('conectando con dispositivo…', '');
+    const pc = createPC(targetId, true);
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    signal(targetId, 'offer', pc.localDescription);
+  }
+
   async function sendQueued(dc, peerId) {
+    // Si hay texto pendiente, enviarlo primero
+    if (pendingTexts.has(peerId)) {
+      const text = pendingTexts.get(peerId);
+      pendingTexts.delete(peerId);
+      dc.send(JSON.stringify({ type: 'text', content: text }));
+      hideOverlay();
+      toast('texto enviado ✓');
+      dc.close();
+      peerConnections.get(peerId)?.close();
+      peerConnections.delete(peerId);
+      return;
+    }
+
     const files = pendingFiles.get(peerId) || [];
     pendingFiles.delete(peerId);
     const total = files.reduce((s, f) => s + f.size, 0);
@@ -826,6 +982,10 @@
     dc.onmessage = (e) => {
       if (typeof e.data === 'string') {
         const msg = JSON.parse(e.data);
+        if (msg.type === 'text') {
+          showReceivedText(msg.content);
+          return;
+        }
         if (msg.type === 'meta') {
           state = { name: msg.name, size: msg.size, chunks: [], got: 0 };
           showOverlay(`recibiendo ${msg.name}`, '0%');
@@ -857,7 +1017,71 @@
     document.getElementById('upload-overlay').classList.remove('open');
   }
 
-  // ── Clips ──
+  // ── Panel de texto ──
+  function openText() {
+    if (!selectedId) { toast('toca un dispositivo primero'); return; }
+    const panel = document.getElementById('text-panel');
+    const input = document.getElementById('text-input');
+    input.value = '';
+    updateTextCounter();
+    // Mostrar el emoji del dispositivo destino en el título
+    const bubble = document.getElementById('dev-' + selectedId);
+    const emoji  = bubble ? bubble.querySelector('.device-ring')?.textContent : '';
+    document.getElementById('text-panel-title').textContent =
+      emoji ? `enviar texto a ${emoji}` : 'enviar texto';
+    panel.classList.add('open');
+    setTimeout(() => input.focus(), 80);
+  }
+  function closeText() {
+    document.getElementById('text-panel').classList.remove('open');
+  }
+  function updateTextCounter() {
+    const len = document.getElementById('text-input').value.length;
+    document.getElementById('text-counter').textContent = `${len} / 10000`;
+    document.getElementById('text-send-btn').disabled = len === 0;
+  }
+
+  document.getElementById('text-input').addEventListener('input', updateTextCounter);
+
+  function submitText() {
+    const text = document.getElementById('text-input').value.trim();
+    if (!text) return;
+    if (!selectedId) { toast('toca un dispositivo primero'); return; }
+    closeText();
+    sendText(text, selectedId);
+  }
+
+  let _recvText = '';
+  function showReceivedText(content) {
+    _recvText = content;
+    document.getElementById('recv-content').textContent = content;
+    // Resetear botón
+    const btn = document.getElementById('recv-copy-btn');
+    btn.classList.remove('copied');
+    document.getElementById('recv-copy-label').textContent = 'copiar texto';
+    document.getElementById('recv-copy-icon').textContent  = '⎘';
+    document.getElementById('recv-panel').classList.add('open');
+  }
+  function closeRecv() {
+    document.getElementById('recv-panel').classList.remove('open');
+  }
+  function copyRecv() {
+    navigator.clipboard.writeText(_recvText).then(() => {
+      const btn = document.getElementById('recv-copy-btn');
+      btn.classList.add('copied');
+      document.getElementById('recv-copy-label').textContent = 'copiado ✓';
+      document.getElementById('recv-copy-icon').textContent  = '✓';
+      setTimeout(() => closeRecv(), 900);
+    }).catch(() => toast('no se pudo copiar'));
+  }
+
+  // Enviar con Ctrl+Enter desde el textarea
+  document.getElementById('text-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) submitText();
+    if (e.key === 'Escape') closeText();
+  });
+
+  // ── Clips (paste global: aún funciona para compartir a la red) ──
   document.addEventListener('paste', async e => {
     const text = (e.clipboardData || window.clipboardData).getData('text').trim();
     if (!text) return;

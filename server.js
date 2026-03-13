@@ -1,7 +1,8 @@
-const express = require('express');
-const qrcode  = require('qrcode');
-const path    = require('path');
-const os      = require('os');
+const express      = require('express');
+const qrcode       = require('qrcode');
+const path         = require('path');
+const os           = require('os');
+const { randomBytes } = require('crypto'); // built-in de Node.js, sin instalar nada
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -35,8 +36,34 @@ function getLocalIP() {
 }
 
 function getClientIP(req) {
-  const forwarded = (req.headers['x-forwarded-for'] || '').split(',')[0].trim();
-  return (forwarded || req.socket.remoteAddress || '').replace(/^::ffff:/, '');
+  // Solo confiar en X-Forwarded-For si estamos en Railway (proxy conocido)
+  // En local, cualquiera podría falsificar ese header
+  if (process.env.RAILWAY_PUBLIC_DOMAIN) {
+    const forwarded = (req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+    if (forwarded) return forwarded.replace(/^::ffff:/, '');
+  }
+  return (req.socket.remoteAddress || '').replace(/^::ffff:/, '');
+}
+
+// Buscar un dispositivo en todos los rooms → devuelve { device, subnet } o null
+function findDevice(deviceId) {
+  for (const [subnet, room] of rooms.entries())
+    if (room.has(deviceId)) return { device: room.get(deviceId), subnet };
+  return null;
+}
+
+// Rate limiting simple sin dependencias externas
+const _rl = new Map();
+function rateLimit(max, windowMs) {
+  return (req, res, next) => {
+    const key = getClientIP(req);
+    const now = Date.now();
+    const entry = _rl.get(key);
+    if (!entry || now > entry.t) { _rl.set(key, { n: 1, t: now + windowMs }); return next(); }
+    if (entry.n >= max) return res.status(429).json({ error: 'Demasiadas solicitudes' });
+    entry.n++;
+    next();
+  };
 }
 
 function isPrivateIP(ip) {
@@ -79,24 +106,27 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── Dispositivos ──
-app.post('/api/register', (req, res) => {
+app.post('/api/register', rateLimit(20, 60_000), (req, res) => {
   const subnet = clientSubnet(req);
   const room   = getRoom(subnet);
-  const { deviceId: existing } = req.body || {};
+  const { deviceId: existing, token: existingToken } = req.body || {};
 
+  // Re-registro: validar que el token coincida antes de renovar
   if (existing && room.has(existing)) {
     const d = room.get(existing);
+    if (d.token !== existingToken) return res.status(403).json({ error: 'Token inválido' });
     d.lastSeen = Date.now();
-    return res.json({ deviceId: existing, emoji: d.emoji });
+    return res.json({ deviceId: existing, emoji: d.emoji, token: d.token });
   }
 
   const deviceId = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const token    = randomBytes(24).toString('hex'); // secreto único por dispositivo
   const used     = new Set([...room.values()].map(d => d.emoji));
   const pool     = EMOJIS.filter(e => !used.has(e));
   const emoji    = (pool.length ? pool : EMOJIS)[Math.floor(Math.random() * (pool.length || EMOJIS.length))];
 
-  room.set(deviceId, { id: deviceId, emoji, subnet, lastSeen: Date.now() });
-  res.json({ deviceId, emoji });
+  room.set(deviceId, { id: deviceId, emoji, token, subnet, lastSeen: Date.now() });
+  res.json({ deviceId, emoji, token });
 });
 
 app.post('/api/heartbeat', (req, res) => {
@@ -120,24 +150,36 @@ app.get('/api/devices', (req, res) => {
 // ── Señalización WebRTC (SSE) ──
 // El servidor SOLO reenvía mensajes — nunca toca los archivos
 app.get('/api/events', (req, res) => {
-  const { deviceId } = req.query;
-  if (!deviceId) return res.status(400).end();
+  const { deviceId, token } = req.query;
 
-  res.setHeader('Content-Type',  'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection',    'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // evita buffering en proxies (Railway/nginx)
+  // Validar que el dispositivo existe y el token es correcto
+  const found = findDevice(deviceId);
+  if (!found || found.device.token !== token) return res.status(403).end();
+
+  res.setHeader('Content-Type',      'text/event-stream');
+  res.setHeader('Cache-Control',     'no-cache');
+  res.setHeader('Connection',        'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
   res.flushHeaders();
 
   sseClients.set(deviceId, res);
-
-  // Ping cada 25s para mantener viva la conexión en Railway
   const ping = setInterval(() => res.write(': ping\n\n'), 25000);
   req.on('close', () => { clearInterval(ping); sseClients.delete(deviceId); });
 });
 
-app.post('/api/signal', (req, res) => {
-  const { to, from, type, data } = req.body;
+app.post('/api/signal', rateLimit(60, 10_000), (req, res) => {
+  const { to, from, token, type, data } = req.body;
+
+  // 1. Verificar que el emisor existe y su token es válido
+  const senderInfo = findDevice(from);
+  if (!senderInfo || senderInfo.device.token !== token)
+    return res.status(403).json({ error: 'No autorizado' });
+
+  // 2. Verificar que el destino está en la MISMA red (mismo room)
+  const targetRoom = getRoom(senderInfo.subnet);
+  if (!targetRoom.has(to))
+    return res.status(403).json({ error: 'Dispositivo fuera de tu red' });
+
   const target = sseClients.get(to);
   if (target) target.write(`data: ${JSON.stringify({ from, type, data })}\n\n`);
   res.json({ ok: !!target });
