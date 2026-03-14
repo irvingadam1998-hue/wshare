@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acerca de — QuickShare</title>
+  <meta name="description"
+    content="QuickShare es una herramienta gratuita para compartir archivos y texto entre dispositivos en la misma red WiFi, sin cables, sin cuentas, sin límites de almacenamiento en la nube.">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7739241937608835"
+    crossorigin="anonymous"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0c0c0c;
+      --surface: #141414;
+      --border: rgba(255, 255, 255, 0.07);
+      --accent: #cbff47;
+      --text: #f0f0f0;
+      --muted: rgba(240, 240, 240, 0.4);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-decoration: none;
+      text-transform: lowercase;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    nav a.active {
+      color: var(--accent);
+    }
+
+    main {
+      flex: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      width: 100%;
+    }
+
+    .page-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .section {
+      margin-bottom: 48px;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    p {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 4px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .feature-icon {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .feature-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .feature-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tech-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .tech-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      background: rgba(203, 255, 71, 0.07);
+      border: 1px solid rgba(203, 255, 71, 0.2);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 4px 10px;
+    }
+
+    .cta-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cta-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .cta-text strong {
+      color: var(--text);
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    /* Ad slot */
+    .ad-slot {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      margin: 40px 0;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 0.74rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.15);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a class="logo" href="/">QuickShare</a>
+    <nav>
+      <a href="/">app</a>
+      <a href="/about.html" class="active">acerca</a>
+      <a href="/help.html">ayuda</a>
+      <a href="/privacy.html">privacidad</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-tag">sobre QuickShare</div>
+    <h1>Comparte sin fricción,<br>sin la nube.</h1>
+    <p class="lead">
+      QuickShare es una herramienta web gratuita para transferir archivos y texto entre cualquier dispositivo
+      que esté en la misma red WiFi. No requiere instalar nada, no necesita cuenta, y tus archivos
+      nunca pasan por ningún servidor externo.
+    </p>
+
+    <!-- Ad -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-7739241937608835"
+        data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="section">
+      <h2>¿Qué puedes hacer?</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <div class="feature-title">Archivos hasta 50 MB</div>
+          <div class="feature-desc">Envía documentos, imágenes, videos y cualquier tipo de archivo directamente entre
+            dispositivos.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">¶</div>
+          <div class="feature-title">Texto instantáneo</div>
+          <div class="feature-desc">Comparte fragmentos de texto, links o contraseñas sin escribir nada dos veces.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <div class="feature-title">Cualquier dispositivo</div>
+          <div class="feature-desc">Funciona en móvil, tablet y PC. Solo necesitas un navegador moderno.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-title">100% privado</div>
+          <div class="feature-desc">Los archivos van directo de navegador a navegador. El servidor solo facilita la
+            conexión inicial.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Velocidad máxima</div>
+          <div class="feature-desc">Al ir directo por tu red local, la transferencia usa toda la velocidad de tu WiFi.
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <div class="feature-title">Sin instalación</div>
+          <div class="feature-desc">Abre la URL en el navegador y listo. No hay apps que descargar ni drivers que
+            instalar.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Cómo funciona por dentro</h2>
+      <p>
+        QuickShare utiliza <strong style="color:var(--text)">WebRTC</strong> — la misma tecnología que usan
+        videollamadas como Google Meet — para establecer un canal de datos cifrado directamente entre
+        dos navegadores. El servidor web actúa únicamente como "intermediario de presentación": intercambia
+        las direcciones de red de cada navegador para que puedan conectarse entre sí, pero <em>nunca
+          recibe ni almacena los archivos</em>.
+      </p>
+      <p>
+        Una vez establecida la conexión P2P, los datos viajan cifrados de extremo a extremo por tu red
+        local, sin salir a internet. Esto lo hace tanto más rápido como más seguro que cualquier solución
+        basada en la nube.
+      </p>
+      <!-- <div class="tech-row">
+        <span class="tech-badge">WebRTC DataChannel</span>
+        <span class="tech-badge">Server-Sent Events</span>
+        <span class="tech-badge">Node.js + Express</span>
+        <span class="tech-badge">P2P cifrado</span>
+        <span class="tech-badge">Sin base de datos</span>
+      </div> -->
+    </div>
+
+    <div class="section">
+      <h2>¿Para quién es útil?</h2>
+      <p>
+        Para cualquiera que trabaje con varios dispositivos: enviar una foto del móvil al PC,
+        pasar un PDF al portátil de un compañero, compartir un link rápido sin usar WhatsApp o
+        mandar un archivo al proyector de la sala de reuniones. Si tus dispositivos están en la
+        misma red WiFi, QuickShare lo conecta.
+      </p>
+      <p>
+        También es útil en entornos donde no se quiere depender de servicios en la nube — oficinas
+        sin internet, redes corporativas restringidas, o simplemente cuando quieres que tus archivos
+        no pasen por servidores de terceros.
+      </p>
+    </div>
+
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-7739241937608835"
+        data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="cta-block">
+      <div class="cta-text">
+        <strong>Pruébalo ahora</strong>
+        Abre QuickShare en dos dispositivos de tu red y transfiere tu primer archivo en segundos.
+      </div>
+      <a class="btn-primary" href="/">Abrir QuickShare →</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="/">App</a>
+      <a href="/about.html">Acerca</a>
+      <a href="/help.html">Ayuda</a>
+      <a href="/privacy.html">Privacidad</a>
+    </div>
+    <span class="footer-copy">QuickShare · transferencia P2P local</span>
+  </footer>
+
+</body>
+
+</html>

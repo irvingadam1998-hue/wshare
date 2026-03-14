@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayuda — QuickShare</title>
+  <meta name="description"
+    content="Cómo usar QuickShare: guía paso a paso para compartir archivos y texto entre dispositivos en tu red WiFi sin instalar nada.">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7739241937608835"
+    crossorigin="anonymous"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0c0c0c;
+      --surface: #141414;
+      --border: rgba(255, 255, 255, 0.07);
+      --accent: #cbff47;
+      --text: #f0f0f0;
+      --muted: rgba(240, 240, 240, 0.4);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-decoration: none;
+      text-transform: lowercase;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+    }
+
+    nav a {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+    }
+
+    nav a.active {
+      color: var(--accent);
+    }
+
+    main {
+      flex: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      width: 100%;
+    }
+
+    .page-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .section {
+      margin-bottom: 52px;
+    }
+
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .step-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: rgba(203, 255, 71, 0.1);
+      border: 1px solid rgba(203, 255, 71, 0.2);
+      border-radius: 8px;
+      min-width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-body {}
+
+    .step-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .step-desc code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: var(--text);
+    }
+
+    /* FAQ */
+    .faq {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      width: 100%;
+      background: var(--surface);
+      border: none;
+      text-align: left;
+      padding: 16px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .faq-q:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .faq-icon {
+      color: var(--accent);
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .faq-a {
+      display: none;
+      padding: 0 20px 16px;
+      background: var(--surface);
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .faq-item.open .faq-a {
+      display: block;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    /* Tip block */
+    .tip {
+      background: rgba(203, 255, 71, 0.05);
+      border: 1px solid rgba(203, 255, 71, 0.15);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 20px;
+    }
+
+    .tip strong {
+      color: var(--accent);
+    }
+
+    /* Ad slot */
+    .ad-slot {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      margin: 40px 0;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Limits table */
+    .limits {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    .limits th,
+    .limits td {
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .limits th {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+
+    .limits td {
+      color: var(--muted);
+    }
+
+    .limits td:first-child {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .limits tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .cta-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cta-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .cta-text strong {
+      color: var(--text);
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 0.74rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.15);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a class="logo" href="/">QuickShare</a>
+    <nav>
+      <a href="/">app</a>
+      <a href="/about.html">acerca</a>
+      <a href="/help.html" class="active">ayuda</a>
+      <a href="/privacy.html">privacidad</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-tag">guía de uso</div>
+    <h1>Cómo usar QuickShare</h1>
+    <p class="lead">
+      Transfiere archivos y texto entre tus dispositivos en segundos. No hace falta instalar nada,
+      solo que ambos estén en la misma red WiFi.
+    </p>
+
+    <div class="section">
+      <h2>Enviar un archivo</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Abre QuickShare en ambos dispositivos</div>
+            <div class="step-desc">
+              En el dispositivo destino, escanea el código QR con la cámara o escribe la dirección
+              que aparece en el header (algo como <code>192.168.1.X:3000</code>). Ambos deben estar
+              conectados al mismo WiFi.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Selecciona el dispositivo destino</div>
+            <div class="step-desc">
+              En la pantalla verás los dispositivos detectados en tu red representados por emojis.
+              Toca el emoji del dispositivo al que quieres enviar — quedará marcado como "seleccionado".
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Elige el archivo</div>
+            <div class="step-desc">
+              Pulsa el botón <code>+</code> para abrir el explorador de archivos, o arrastra el archivo
+              directamente sobre el diamante central o sobre el emoji del dispositivo destino.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">El archivo llega automáticamente</div>
+            <div class="step-desc">
+              El dispositivo receptor descargará el archivo automáticamente. Verás el progreso en
+              tiempo real en ambas pantallas. El archivo nunca pasa por ningún servidor externo.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip">
+        <strong>Tip:</strong> Puedes arrastrar múltiples archivos a la vez. Se enviarán uno por uno
+        en el orden en que los seleccionaste.
+      </div>
+    </div>
+
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-7739241937608835"
+        data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="section">
+      <h2>Enviar texto</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Selecciona un dispositivo destino</div>
+            <div class="step-desc">Toca el emoji del dispositivo al que quieres enviar el texto.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">Abre el panel de texto</div>
+            <div class="step-desc">
+              Pulsa el botón <code>¶</code> en el header, o toca el enlace "texto ¶" en la pantalla principal.
+              Se abrirá un panel donde puedes escribir o pegar hasta 10.000 caracteres.
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Envía</div>
+            <div class="step-desc">
+              Pulsa "enviar a la red" o usa <code>Ctrl + Enter</code>. El texto aparecerá instantáneamente
+              en el otro dispositivo con un botón para copiarlo al portapapeles.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tip">
+        <strong>Tip alternativo:</strong> También puedes pegar (<code>Ctrl+V</code>) texto directamente
+        en la pantalla principal sin abrir ningún panel — el texto se compartirá con toda tu red local.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Límites y requisitos</h2>
+      <div class="table-wrap">
+        <table class="limits">
+          <thead>
+            <tr>
+              <th>Parámetro</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tamaño máximo por archivo</td>
+              <td>50 MB</td>
+            </tr>
+            <tr>
+              <td>Longitud máxima de texto</td>
+              <td>10.000 caracteres</td>
+            </tr>
+            <tr>
+              <td>Dispositivos simultáneos</td>
+              <td>Sin límite (depende de tu red)</td>
+            </tr>
+            <tr>
+              <td>Navegadores soportados</td>
+              <td>Chrome, Firefox, Safari, Edge (versiones modernas)</td>
+            </tr>
+            <tr>
+              <td>Requisito de red</td>
+              <td>Misma red WiFi o LAN</td>
+            </tr>
+            <tr>
+              <td>Conexión a internet</td>
+              <td>Solo para cargar la app; la transferencia es local</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Por qué no veo otros dispositivos?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            Asegúrate de que ambos dispositivos estén conectados a la <strong>misma red WiFi</strong>.
+            Algunas redes tienen el "aislamiento de cliente" activado (común en redes de hoteles o empresas),
+            lo que impide que los dispositivos se vean entre sí. En ese caso, usa un punto de acceso personal
+            o una red doméstica normal.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Mis archivos pasan por internet?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            No. La transferencia usa WebRTC P2P: los datos van directamente de un navegador al otro
+            por tu red local. El servidor solo intercambia las señales de conexión inicial (SDP/ICE),
+            que no contienen tus datos.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Funciona en iPhone / iOS?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            Sí. Safari en iOS soporta WebRTC desde iOS 14.5. Abre la URL de QuickShare en Safari y
+            funcionará igual que en cualquier otro dispositivo. Para escanear el QR, puedes usar
+            la cámara del iPhone directamente.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Puedo enviar varios archivos a la vez?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            Sí. Al abrir el selector de archivos puedes elegir múltiples archivos. También puedes
+            arrastrar varios archivos a la vez sobre el área de drop. Se enviarán secuencialmente.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Qué pasa si cierro el navegador durante la transferencia?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            La transferencia se interrumpirá. QuickShare no tiene reanudación de transferencias — tendrás
+            que volver a enviar el archivo desde el principio. Para archivos grandes, mantén ambas
+            pantallas abiertas hasta que el proceso termine.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Los archivos recibidos se guardan en algún servidor?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            No. El servidor de QuickShare no almacena archivos ni texto. Los datos van directamente
+            entre navegadores. El servidor solo mantiene en memoria la lista de dispositivos activos
+            (emojis e IDs temporales) durante la sesión, y se borran cuando el dispositivo se desconecta.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-7739241937608835"
+        data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <div class="cta-block">
+      <div class="cta-text">
+        <strong>Listo para empezar</strong>
+        Abre QuickShare en dos dispositivos de tu red y transfiere tu primer archivo.
+      </div>
+      <a class="btn-primary" href="/">Abrir QuickShare →</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="/">App</a>
+      <a href="/about.html">Acerca</a>
+      <a href="/help.html">Ayuda</a>
+      <a href="/privacy.html">Privacidad</a>
+    </div>
+    <span class="footer-copy">QuickShare · transferencia P2P local</span>
+  </footer>
+
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+    }
+  </script>
+</body>
+
+</html>
