@@ -154,8 +154,12 @@ app.post('/api/heartbeat', (req, res) => {
   const subnet = clientSubnet(req);
   const { deviceId, token } = req.body || {};
   const d = getRoom(subnet).get(deviceId);
-  if (d && d.token === token) d.lastSeen = Date.now();
-  res.json({ ok: true }); // respuesta neutral para no filtrar si el ID existe
+  if (d && d.token === token) {
+    d.lastSeen = Date.now();
+    return res.json({ ok: true });
+  }
+  // El dispositivo expiró o el token no coincide — el cliente debe re-registrarse
+  res.json({ ok: false });
 });
 
 app.get('/api/devices', (req, res) => {

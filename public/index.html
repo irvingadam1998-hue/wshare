@@ -1524,12 +1524,19 @@
     }
 
     // ── Heartbeat cada 10s ──
-    setInterval(() => {
-      fetch('/api/heartbeat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deviceId: myDeviceId, token: myToken })
-      });
+    // Si el servidor responde ok:false, el dispositivo expiró → re-registrar y reconectar SSE
+    setInterval(async () => {
+      try {
+        const res = await fetch('/api/heartbeat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deviceId: myDeviceId, token: myToken })
+        }).then(r => r.json());
+        if (!res.ok) {
+          await register();
+          connectEvents();
+        }
+      } catch { /* error de red — se reintentará en el próximo tick */ }
     }, 10000);
 
     // ── QR ──
@@ -1715,11 +1722,14 @@
 
     // ── WebRTC: señalización via SSE ──
     let _es = null;
+    let _esDelay = 3000; // backoff: 3s → 6s → 12s → máx 20s
     function connectEvents() {
       if (_es) { _es.close(); _es = null; }
       const es = new EventSource(`/api/events?deviceId=${myDeviceId}&token=${myToken}`);
       _es = es;
+      es.onopen = () => { _esDelay = 3000; }; // resetear backoff al conectar
       es.onmessage = async (e) => {
+        _esDelay = 3000;
         const { from, type, data } = JSON.parse(e.data);
 
         if (type === 'offer') {
@@ -1741,7 +1751,8 @@
       es.onerror = () => {
         es.close(); // evita auto-reconexión del browser
         _es = null;
-        setTimeout(connectEvents, 3000);
+        setTimeout(connectEvents, _esDelay);
+        _esDelay = Math.min(_esDelay * 2, 20000); // backoff exponencial
       };
     }
 
