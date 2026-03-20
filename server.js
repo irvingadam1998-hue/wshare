@@ -64,8 +64,8 @@ function findDevice(deviceId) {
 }
 
 // Rate limiting simple sin dependencias externas
-const _rl = new Map();
 function rateLimit(max, windowMs) {
+  const _rl = new Map(); // Map propio por endpoint — evita contaminación cruzada
   return (req, res, next) => {
     const key = getClientIP(req);
     const now = Date.now();
@@ -114,6 +114,16 @@ setInterval(() => {
 }, 10000);
 
 app.use(express.json());
+
+// Security headers básicos
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── Dispositivos ──
@@ -142,10 +152,10 @@ app.post('/api/register', rateLimit(20, 60_000), (req, res) => {
 
 app.post('/api/heartbeat', (req, res) => {
   const subnet = clientSubnet(req);
-  const { deviceId } = req.body || {};
+  const { deviceId, token } = req.body || {};
   const d = getRoom(subnet).get(deviceId);
-  if (d) d.lastSeen = Date.now();
-  res.json({ ok: true });
+  if (d && d.token === token) d.lastSeen = Date.now();
+  res.json({ ok: true }); // respuesta neutral para no filtrar si el ID existe
 });
 
 app.get('/api/devices', (req, res) => {
@@ -214,22 +224,25 @@ app.post('/api/signal', rateLimit(60, 10_000), (req, res) => {
 });
 
 // ── Clips de texto ──
+const MAX_CLIPS_PER_SUBNET = 100;
+
 app.get('/api/clips', (req, res) => {
   const clips = getRoomClips(clientSubnet(req));
   res.json([...clips.values()].map(({ id, text, mtime }) => ({ id, text, mtime })));
 });
 
-app.post('/api/clips', (req, res) => {
+app.post('/api/clips', rateLimit(30, 60_000), (req, res) => {
   const text = (req.body.text || '').trim();
   if (!text) return res.status(400).json({ error: 'Texto vacío' });
   if (text.length > 10000) return res.status(400).json({ error: 'Texto muy largo' });
   const clips = getRoomClips(clientSubnet(req));
+  if (clips.size >= MAX_CLIPS_PER_SUBNET) return res.status(429).json({ error: 'Límite de clips alcanzado' });
   const id    = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   clips.set(id, { id, text, mtime: new Date() });
   res.json({ ok: true, id });
 });
 
-app.delete('/api/clips/:id', (req, res) => {
+app.delete('/api/clips/:id', rateLimit(30, 60_000), (req, res) => {
   const clips = getRoomClips(clientSubnet(req));
   if (!clips.has(req.params.id)) return res.status(404).json({ error: 'Not found' });
   clips.delete(req.params.id);

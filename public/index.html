@@ -1520,7 +1520,7 @@
       fetch('/api/heartbeat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ deviceId: myDeviceId })
+        body: JSON.stringify({ deviceId: myDeviceId, token: myToken })
       });
     }, 10000);
 
@@ -1758,16 +1758,18 @@
         }, 15000);
         dc.onopen = () => { clearTimeout(connTimeout); sendQueued(dc, peerId); };
         dc.onmessage = (e) => {
-          const msg = JSON.parse(e.data);
-          if (msg.type === 'accept') {
-            startActualTransfer(dc, peerId);
-          } else if (msg.type === 'reject') {
-            pendingFiles.delete(peerId);
-            hideOverlay();
-            toast('el receptor rechazó el archivo 🚫');
-            dc.close();
-            setTimeout(() => { peerConnections.get(peerId)?.close(); peerConnections.delete(peerId); }, 800);
-          }
+          try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'accept') {
+              startActualTransfer(dc, peerId);
+            } else if (msg.type === 'reject') {
+              pendingFiles.delete(peerId);
+              hideOverlay();
+              toast('el receptor rechazó el archivo 🚫');
+              dc.close();
+              setTimeout(() => { peerConnections.get(peerId)?.close(); peerConnections.delete(peerId); }, 800);
+            }
+          } catch { hideOverlay(); toast('error de protocolo'); }
         };
         dc.onerror = () => { clearTimeout(connTimeout); pendingFiles.delete(peerId); hideOverlay(); toast('error en la transferencia'); };
       } else {
@@ -1845,21 +1847,33 @@
       const files = pendingFiles.get(peerId) || [];
       pendingFiles.delete(peerId);
 
+      const CHUNK      = 256 * 1024;      // 256 KB per chunk
+      const HIGH_WATER = 4 * 1024 * 1024; // pause if buffer > 4 MB
+      const LOW_WATER  = 512 * 1024;      // resume at 512 KB
+      dc.bufferedAmountLowThreshold = LOW_WATER;
+
       for (const file of files) {
         showOverlay(`enviando ${file.name}`, '0%');
         dc.send(JSON.stringify({ type: 'meta', name: file.name, size: file.size }));
 
-        const buf = await file.arrayBuffer();
-        const CHUNK = 64 * 1024;
         let offset = 0;
-        while (offset < buf.byteLength) {
-          while (dc.bufferedAmount > 4 * 1024 * 1024)
-            await new Promise(r => setTimeout(r, 30));
-          const end = Math.min(offset + CHUNK, buf.byteLength);
-          dc.send(buf.slice(offset, end));
+        let lastPct = -1;
+        while (offset < file.size) {
+          if (dc.bufferedAmount > HIGH_WATER) {
+            await new Promise(resolve => {
+              if (dc.bufferedAmount <= LOW_WATER) { resolve(); return; }
+              dc.onbufferedamountlow = () => { dc.onbufferedamountlow = null; resolve(); };
+            });
+          }
+          const end = Math.min(offset + CHUNK, file.size);
+          const chunk = await file.slice(offset, end).arrayBuffer();
+          dc.send(chunk);
           offset = end;
-          document.getElementById('upload-pct').textContent =
-            Math.round(offset / buf.byteLength * 100) + '%';
+          const pct = Math.round(offset / file.size * 100);
+          if (pct !== lastPct) {
+            document.getElementById('upload-pct').textContent = pct + '%';
+            lastPct = pct;
+          }
         }
         dc.send(JSON.stringify({ type: 'done' }));
       }
@@ -1872,6 +1886,7 @@
 
     // ── Recibir archivos (el archivo llega directo del otro navegador) ──
     function receiveOn(dc, peerId) {
+      dc.binaryType = 'arraybuffer';
       let state = null;
       let doneCount = 0;
       let expectedFiles = 1;
@@ -1891,18 +1906,21 @@
 
       dc.onmessage = (e) => {
         if (typeof e.data === 'string') {
-          const msg = JSON.parse(e.data);
+          let msg;
+          try { msg = JSON.parse(e.data); } catch { return; }
           if (msg.type === 'text') {
-            showReceivedText(msg.content);
+            if (typeof msg.content === 'string') showReceivedText(msg.content);
             return;
           }
           // Solicitud: mostrar modal ANTES de recibir datos
           if (msg.type === 'request') {
+            if (!Array.isArray(msg.files) || !msg.files.length) return;
             expectedFiles = msg.files.length;
             showIncomingRequest(dc, msg.files, peerId);
             return;
           }
           if (msg.type === 'meta') {
+            if (typeof msg.name !== 'string' || typeof msg.size !== 'number' || msg.size < 0) return;
             state = { name: msg.name, size: msg.size, chunks: [], got: 0 };
             showOverlay(`recibiendo ${msg.name}`, '0%');
           } else if (msg.type === 'done' && state) {
