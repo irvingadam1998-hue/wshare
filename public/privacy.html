@@ -59,6 +59,7 @@
     nav {
       display: flex;
       gap: 20px;
+      align-items: center;
     }
 
     nav a {
@@ -74,6 +75,23 @@
 
     nav a.active {
       color: var(--accent);
+    }
+
+    .lang-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .lang-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     main {
@@ -212,49 +230,48 @@
   <header>
     <a class="logo" href="/">InstantDrop</a>
     <nav>
-      <a href="/">app</a>
-      <a href="/about.html">acerca</a>
-      <a href="/help.html">ayuda</a>
-      <a href="/privacy.html" class="active">privacidad</a>
+      <a href="/" data-i18n="nav.app">app</a>
+      <a href="/about.html" data-i18n="nav.about">acerca</a>
+      <a href="/help.html" data-i18n="nav.help">ayuda</a>
+      <a href="/privacy.html" class="active" data-i18n="nav.privacy">privacidad</a>
+      <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
     </nav>
   </header>
 
   <main>
-    <div class="page-tag">política de privacidad</div>
-    <h1>Privacidad</h1>
-    <p class="update-date">Última actualización: marzo 2025</p>
+    <div class="page-tag" data-i18n="privacy.tag">política de privacidad</div>
+    <h1 data-i18n="privacy.h1">Privacidad</h1>
+    <p class="update-date" data-i18n="privacy.date">Última actualización: marzo 2025</p>
 
     <div class="highlight">
-      <p>
+      <p data-i18n="privacy.summary">
         <strong>Resumen:</strong> InstantDrop no recopila, almacena ni vende tus datos personales.
         Tus archivos y textos van directamente entre dispositivos sin pasar por nuestros servidores.
-        <!-- Solo usamos cookies de Google AdSense para mostrar anuncios relevantes. -->
       </p>
     </div>
 
     <div class="section">
-      <h2>1. Qué información manejamos</h2>
-      <p>
+      <h2 data-i18n="privacy.s1.title">1. Qué información manejamos</h2>
+      <p data-i18n="privacy.s1.p1">
         InstantDrop está diseñado con privacidad por defecto. Aquí detallamos exactamente qué datos
         toca el servidor y qué no:
       </p>
-      <p><strong>Lo que el servidor SÍ procesa temporalmente:</strong></p>
+      <p data-i18n="privacy.s1.yes"><strong>Lo que el servidor SÍ procesa temporalmente:</strong></p>
       <ul>
-        <li>Tu dirección IP local (para agrupar dispositivos en la misma red)</li>
-        <li>Un identificador anónimo de dispositivo generado aleatoriamente (se almacena en tu navegador con
-          localStorage)</li>
-        <li>Un token de sesión aleatorio para autenticar las señales WebRTC</li>
-        <li>El emoji asignado a tu dispositivo para la sesión</li>
+        <li data-i18n="privacy.s1.y1">Tu dirección IP local (para agrupar dispositivos en la misma red)</li>
+        <li data-i18n="privacy.s1.y2">Un identificador anónimo de dispositivo generado aleatoriamente (se almacena en tu navegador con localStorage)</li>
+        <li data-i18n="privacy.s1.y3">Un token de sesión aleatorio para autenticar las señales WebRTC</li>
+        <li data-i18n="privacy.s1.y4">El emoji asignado a tu dispositivo para la sesión</li>
       </ul>
-      <p>
+      <p data-i18n="privacy.s1.p2">
         Estos datos se almacenan únicamente en memoria RAM del servidor, nunca en disco o base de datos,
         y se eliminan automáticamente cuando el dispositivo se desconecta o tras 30 segundos de inactividad.
       </p>
-      <p><strong>Lo que el servidor NUNCA procesa:</strong></p>
+      <p data-i18n="privacy.s1.no"><strong>Lo que el servidor NUNCA procesa:</strong></p>
       <ul>
-        <li>El contenido de tus archivos</li>
-        <li>El texto que compartes entre dispositivos</li>
-        <li>Tu nombre, correo, número de teléfono u otra información personal</li>
+        <li data-i18n="privacy.s1.n1">El contenido de tus archivos</li>
+        <li data-i18n="privacy.s1.n2">El texto que compartes entre dispositivos</li>
+        <li data-i18n="privacy.s1.n3">Tu nombre, correo, número de teléfono u otra información personal</li>
       </ul>
     </div>
 
@@ -265,54 +282,32 @@
     </div>
 
     <div class="section">
-      <h2>2. Transferencia de archivos P2P</h2>
-      <p>
+      <h2 data-i18n="privacy.s2.title">2. Transferencia de archivos P2P</h2>
+      <p data-i18n="privacy.s2.p1">
         InstantDrop utiliza <strong>WebRTC DataChannel</strong> para transferir archivos. Esto significa que
         una vez establecida la conexión entre dos dispositivos, los datos viajan directamente de un
         navegador al otro sin pasar por nuestros servidores.
       </p>
-      <p>
+      <p data-i18n="privacy.s2.p2">
         La señalización inicial (el proceso de "presentar" un dispositivo al otro) sí pasa por el
         servidor, pero esta información solo contiene metadatos de red (direcciones ICE/SDP) y
         nunca el contenido de los archivos.
       </p>
     </div>
 
-    <!-- <div class="section">
-      <h2>3. Publicidad (Google AdSense)</h2>
-      <p>
-        InstantDrop muestra anuncios a través de <strong>Google AdSense</strong> para financiar el
-        mantenimiento del servicio gratuito. Google puede usar cookies y tecnologías similares
-        para mostrar anuncios personalizados según tu historial de navegación.
-      </p>
-      <p>Puedes obtener más información sobre cómo Google usa los datos en:</p>
-      <ul>
-        <li>Política de privacidad de Google: <strong>policies.google.com/privacy</strong></li>
-        <li>Configuración de anuncios de Google: <strong>adssettings.google.com</strong></li>
-      </ul>
-      <p>
-        Si prefieres no recibir anuncios personalizados, puedes desactivarlos en la
-        configuración de anuncios de Google o usando una extensión de navegador para bloquear cookies de terceros.
-      </p>
-    </div> -->
-
     <div class="section">
-      <h2>3. Cookies y almacenamiento local</h2>
-      <p>
+      <h2 data-i18n="privacy.s3.title">3. Cookies y almacenamiento local</h2>
+      <p data-i18n="privacy.s3.p1">
         InstantDrop usa <strong>localStorage</strong> del navegador para recordar tu identificador de
         dispositivo y emoji entre sesiones. Esto evita que tengas que volver a registrarte cada vez
         que abres la app. Estos datos se almacenan solo en tu dispositivo y no se envían a nuestros
         servidores (salvo el ID anónimo para identificarte en la red).
       </p>
-      <!-- <p>
-        Google AdSense puede instalar cookies de terceros para fines publicitarios. Puedes gestionar
-        o eliminar estas cookies desde la configuración de tu navegador.
-      </p> -->
     </div>
 
     <div class="section">
-      <h2>4. Menores de edad</h2>
-      <p>
+      <h2 data-i18n="privacy.s4.title">4. Menores de edad</h2>
+      <p data-i18n="privacy.s4.p1">
         InstantDrop no está dirigido a menores de 13 años. No recopilamos conscientemente información
         de menores. Si eres padre o tutor y crees que tu hijo ha proporcionado información personal,
         contacta con nosotros para eliminarla.
@@ -320,8 +315,8 @@
     </div>
 
     <div class="section">
-      <h2>5. Cambios en esta política</h2>
-      <p>
+      <h2 data-i18n="privacy.s5.title">5. Cambios en esta política</h2>
+      <p data-i18n="privacy.s5.p1">
         Podemos actualizar esta política de privacidad ocasionalmente. Cualquier cambio se publicará
         en esta página con la fecha de actualización correspondiente. Te recomendamos revisarla
         periódicamente.
@@ -329,8 +324,8 @@
     </div>
 
     <div class="section">
-      <h2>6. Contacto</h2>
-      <p>
+      <h2 data-i18n="privacy.s6.title">6. Contacto</h2>
+      <p data-i18n="privacy.s6.p1">
         Si tienes preguntas sobre esta política de privacidad o sobre cómo InstantDrop maneja tus datos,
         puedes escribirnos a <a href="mailto:instantdropweb@gmail.com" style="color:var(--accent)">instantdropweb@gmail.com</a>.
       </p>
@@ -339,14 +334,106 @@
 
   <footer>
     <div class="footer-links">
-      <a href="/">App</a>
-      <a href="/about.html">Acerca</a>
-      <a href="/help.html">Ayuda</a>
-      <a href="/privacy.html">Privacidad</a>
-      <a href="mailto:instantdropweb@gmail.com">Contacto</a>
+      <a href="/" data-i18n="footer.app">App</a>
+      <a href="/about.html" data-i18n="footer.about">Acerca</a>
+      <a href="/help.html" data-i18n="footer.help">Ayuda</a>
+      <a href="/privacy.html" data-i18n="footer.privacy">Privacidad</a>
+      <a href="mailto:instantdropweb@gmail.com" data-i18n="footer.contact">Contacto</a>
     </div>
-    <span class="footer-copy">InstantDrop · transferencia P2P local</span>
+    <span class="footer-copy" data-i18n="footer.copy">InstantDrop · transferencia P2P local</span>
   </footer>
+
+  <script>
+    const TRANSLATIONS = {
+      es: {
+        'nav.app': 'app', 'nav.about': 'acerca', 'nav.help': 'ayuda', 'nav.privacy': 'privacidad',
+        'footer.app': 'App', 'footer.about': 'Acerca', 'footer.help': 'Ayuda',
+        'footer.privacy': 'Privacidad', 'footer.contact': 'Contacto',
+        'footer.copy': 'InstantDrop · transferencia P2P local',
+        'privacy.tag': 'política de privacidad',
+        'privacy.h1': 'Privacidad',
+        'privacy.date': 'Última actualización: marzo 2025',
+        'privacy.summary': '<strong>Resumen:</strong> InstantDrop no recopila, almacena ni vende tus datos personales. Tus archivos y textos van directamente entre dispositivos sin pasar por nuestros servidores.',
+        'privacy.s1.title': '1. Qué información manejamos',
+        'privacy.s1.p1': 'InstantDrop está diseñado con privacidad por defecto. Aquí detallamos exactamente qué datos toca el servidor y qué no:',
+        'privacy.s1.yes': '<strong>Lo que el servidor SÍ procesa temporalmente:</strong>',
+        'privacy.s1.y1': 'Tu dirección IP local (para agrupar dispositivos en la misma red)',
+        'privacy.s1.y2': 'Un identificador anónimo de dispositivo generado aleatoriamente (se almacena en tu navegador con localStorage)',
+        'privacy.s1.y3': 'Un token de sesión aleatorio para autenticar las señales WebRTC',
+        'privacy.s1.y4': 'El emoji asignado a tu dispositivo para la sesión',
+        'privacy.s1.p2': 'Estos datos se almacenan únicamente en memoria RAM del servidor, nunca en disco o base de datos, y se eliminan automáticamente cuando el dispositivo se desconecta o tras 30 segundos de inactividad.',
+        'privacy.s1.no': '<strong>Lo que el servidor NUNCA procesa:</strong>',
+        'privacy.s1.n1': 'El contenido de tus archivos',
+        'privacy.s1.n2': 'El texto que compartes entre dispositivos',
+        'privacy.s1.n3': 'Tu nombre, correo, número de teléfono u otra información personal',
+        'privacy.s2.title': '2. Transferencia de archivos P2P',
+        'privacy.s2.p1': 'InstantDrop utiliza <strong>WebRTC DataChannel</strong> para transferir archivos. Esto significa que una vez establecida la conexión entre dos dispositivos, los datos viajan directamente de un navegador al otro sin pasar por nuestros servidores.',
+        'privacy.s2.p2': 'La señalización inicial (el proceso de "presentar" un dispositivo al otro) sí pasa por el servidor, pero esta información solo contiene metadatos de red (direcciones ICE/SDP) y nunca el contenido de los archivos.',
+        'privacy.s3.title': '3. Cookies y almacenamiento local',
+        'privacy.s3.p1': 'InstantDrop usa <strong>localStorage</strong> del navegador para recordar tu identificador de dispositivo y emoji entre sesiones. Esto evita que tengas que volver a registrarte cada vez que abres la app. Estos datos se almacenan solo en tu dispositivo y no se envían a nuestros servidores (salvo el ID anónimo para identificarte en la red).',
+        'privacy.s4.title': '4. Menores de edad',
+        'privacy.s4.p1': 'InstantDrop no está dirigido a menores de 13 años. No recopilamos conscientemente información de menores. Si eres padre o tutor y crees que tu hijo ha proporcionado información personal, contacta con nosotros para eliminarla.',
+        'privacy.s5.title': '5. Cambios en esta política',
+        'privacy.s5.p1': 'Podemos actualizar esta política de privacidad ocasionalmente. Cualquier cambio se publicará en esta página con la fecha de actualización correspondiente. Te recomendamos revisarla periódicamente.',
+        'privacy.s6.title': '6. Contacto',
+        'privacy.s6.p1': 'Si tienes preguntas sobre esta política de privacidad o sobre cómo InstantDrop maneja tus datos, puedes escribirnos a <a href="mailto:instantdropweb@gmail.com" style="color:var(--accent)">instantdropweb@gmail.com</a>.',
+      },
+      en: {
+        'nav.app': 'app', 'nav.about': 'about', 'nav.help': 'help', 'nav.privacy': 'privacy',
+        'footer.app': 'App', 'footer.about': 'About', 'footer.help': 'Help',
+        'footer.privacy': 'Privacy', 'footer.contact': 'Contact',
+        'footer.copy': 'InstantDrop · local P2P transfer',
+        'privacy.tag': 'privacy policy',
+        'privacy.h1': 'Privacy',
+        'privacy.date': 'Last updated: March 2025',
+        'privacy.summary': '<strong>Summary:</strong> InstantDrop does not collect, store, or sell your personal data. Your files and text go directly between devices without passing through our servers.',
+        'privacy.s1.title': '1. What information we handle',
+        'privacy.s1.p1': 'InstantDrop is designed with privacy by default. Here we detail exactly what data the server touches and what it doesn\'t:',
+        'privacy.s1.yes': '<strong>What the server DOES process temporarily:</strong>',
+        'privacy.s1.y1': 'Your local IP address (to group devices on the same network)',
+        'privacy.s1.y2': 'A randomly generated anonymous device identifier (stored in your browser with localStorage)',
+        'privacy.s1.y3': 'A random session token to authenticate WebRTC signals',
+        'privacy.s1.y4': 'The emoji assigned to your device for the session',
+        'privacy.s1.p2': 'This data is stored only in the server\'s RAM, never on disk or in a database, and is automatically deleted when the device disconnects or after 30 seconds of inactivity.',
+        'privacy.s1.no': '<strong>What the server NEVER processes:</strong>',
+        'privacy.s1.n1': 'The content of your files',
+        'privacy.s1.n2': 'The text you share between devices',
+        'privacy.s1.n3': 'Your name, email, phone number, or other personal information',
+        'privacy.s2.title': '2. P2P file transfer',
+        'privacy.s2.p1': 'InstantDrop uses <strong>WebRTC DataChannel</strong> to transfer files. This means that once the connection between two devices is established, data travels directly from one browser to the other without going through our servers.',
+        'privacy.s2.p2': 'The initial signaling (the process of "introducing" one device to another) does go through the server, but this information only contains network metadata (ICE/SDP addresses) and never the content of the files.',
+        'privacy.s3.title': '3. Cookies and local storage',
+        'privacy.s3.p1': 'InstantDrop uses the browser\'s <strong>localStorage</strong> to remember your device identifier and emoji between sessions. This prevents you from having to re-register every time you open the app. This data is stored only on your device and is not sent to our servers (except for the anonymous ID to identify you on the network).',
+        'privacy.s4.title': '4. Minors',
+        'privacy.s4.p1': 'InstantDrop is not directed at children under 13. We do not knowingly collect information from minors. If you are a parent or guardian and believe your child has provided personal information, contact us to have it removed.',
+        'privacy.s5.title': '5. Changes to this policy',
+        'privacy.s5.p1': 'We may update this privacy policy occasionally. Any changes will be published on this page with the corresponding update date. We recommend reviewing it periodically.',
+        'privacy.s6.title': '6. Contact',
+        'privacy.s6.p1': 'If you have questions about this privacy policy or how InstantDrop handles your data, you can write to us at <a href="mailto:instantdropweb@gmail.com" style="color:var(--accent)">instantdropweb@gmail.com</a>.',
+      }
+    };
+
+    const saved = localStorage.getItem('lang');
+    let currentLang = saved || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+
+    function applyLang(lang) {
+      document.documentElement.lang = lang;
+      const T = TRANSLATIONS[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (T[key] !== undefined) el.innerHTML = T[key];
+      });
+      document.getElementById('lang-btn').textContent = lang === 'es' ? 'EN' : 'ES';
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'es' ? 'en' : 'es');
+    }
+
+    applyLang(currentLang);
+  </script>
 
 </body>
 

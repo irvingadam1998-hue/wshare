@@ -59,6 +59,7 @@
     nav {
       display: flex;
       gap: 20px;
+      align-items: center;
     }
 
     nav a {
@@ -74,6 +75,23 @@
 
     nav a.active {
       color: var(--accent);
+    }
+
+    .lang-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .lang-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     main {
@@ -389,29 +407,30 @@
   <header>
     <a class="logo" href="/">InstantDrop</a>
     <nav>
-      <a href="/">app</a>
-      <a href="/about.html">acerca</a>
-      <a href="/help.html" class="active">ayuda</a>
-      <a href="/privacy.html">privacidad</a>
+      <a href="/" data-i18n="nav.app">app</a>
+      <a href="/about.html" data-i18n="nav.about">acerca</a>
+      <a href="/help.html" class="active" data-i18n="nav.help">ayuda</a>
+      <a href="/privacy.html" data-i18n="nav.privacy">privacidad</a>
+      <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
     </nav>
   </header>
 
   <main>
-    <div class="page-tag">guía de uso</div>
-    <h1>Cómo usar InstantDrop</h1>
-    <p class="lead">
+    <div class="page-tag" data-i18n="help.tag">guía de uso</div>
+    <h1 data-i18n="help.h1">Cómo usar InstantDrop</h1>
+    <p class="lead" data-i18n="help.lead">
       Transfiere archivos y texto entre tus dispositivos en segundos. No hace falta instalar nada,
       solo que ambos estén en la misma red WiFi.
     </p>
 
     <div class="section">
-      <h2>Enviar un archivo</h2>
+      <h2 data-i18n="help.send.title">Enviar un archivo</h2>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-body">
-            <div class="step-title">Abre InstantDrop en ambos dispositivos</div>
-            <div class="step-desc">
+            <div class="step-title" data-i18n="help.send.s1.title">Abre InstantDrop en ambos dispositivos</div>
+            <div class="step-desc" data-i18n="help.send.s1.desc">
               En el dispositivo destino, escanea el código QR con la cámara o escribe la dirección
               que aparece en el header (algo como <code>192.168.1.X:3000</code>). Ambos deben estar
               conectados al mismo WiFi.
@@ -421,8 +440,8 @@
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-body">
-            <div class="step-title">Selecciona el dispositivo destino</div>
-            <div class="step-desc">
+            <div class="step-title" data-i18n="help.send.s2.title">Selecciona el dispositivo destino</div>
+            <div class="step-desc" data-i18n="help.send.s2.desc">
               En la pantalla verás los dispositivos detectados en tu red representados por emojis.
               Toca el emoji del dispositivo al que quieres enviar — quedará marcado como "seleccionado".
             </div>
@@ -431,8 +450,8 @@
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
-            <div class="step-title">Elige el archivo</div>
-            <div class="step-desc">
+            <div class="step-title" data-i18n="help.send.s3.title">Elige el archivo</div>
+            <div class="step-desc" data-i18n="help.send.s3.desc">
               Pulsa el botón <code>+</code> para abrir el explorador de archivos, o arrastra el archivo
               directamente sobre el diamante central o sobre el emoji del dispositivo destino.
             </div>
@@ -441,15 +460,15 @@
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-body">
-            <div class="step-title">El archivo llega automáticamente</div>
-            <div class="step-desc">
+            <div class="step-title" data-i18n="help.send.s4.title">El archivo llega automáticamente</div>
+            <div class="step-desc" data-i18n="help.send.s4.desc">
               El dispositivo receptor descargará el archivo automáticamente. Verás el progreso en
               tiempo real en ambas pantallas. El archivo nunca pasa por ningún servidor externo.
             </div>
           </div>
         </div>
       </div>
-      <div class="tip">
+      <div class="tip" data-i18n="help.send.tip">
         <strong>Tip:</strong> Puedes arrastrar múltiples archivos a la vez. Se enviarán uno por uno
         en el orden en que los seleccionaste.
       </div>
@@ -462,20 +481,20 @@
     </div>
 
     <div class="section">
-      <h2>Enviar texto</h2>
+      <h2 data-i18n="help.text.title">Enviar texto</h2>
       <div class="steps">
         <div class="step">
           <div class="step-num">1</div>
           <div class="step-body">
-            <div class="step-title">Selecciona un dispositivo destino</div>
-            <div class="step-desc">Toca el emoji del dispositivo al que quieres enviar el texto.</div>
+            <div class="step-title" data-i18n="help.text.s1.title">Selecciona un dispositivo destino</div>
+            <div class="step-desc" data-i18n="help.text.s1.desc">Toca el emoji del dispositivo al que quieres enviar el texto.</div>
           </div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
           <div class="step-body">
-            <div class="step-title">Abre el panel de texto</div>
-            <div class="step-desc">
+            <div class="step-title" data-i18n="help.text.s2.title">Abre el panel de texto</div>
+            <div class="step-desc" data-i18n="help.text.s2.desc">
               Pulsa el botón <code>¶</code> en el header, o toca el enlace "texto ¶" en la pantalla principal.
               Se abrirá un panel donde puedes escribir o pegar hasta 10.000 caracteres.
             </div>
@@ -484,54 +503,54 @@
         <div class="step">
           <div class="step-num">3</div>
           <div class="step-body">
-            <div class="step-title">Envía</div>
-            <div class="step-desc">
+            <div class="step-title" data-i18n="help.text.s3.title">Envía</div>
+            <div class="step-desc" data-i18n="help.text.s3.desc">
               Pulsa "enviar a la red" o usa <code>Ctrl + Enter</code>. El texto aparecerá instantáneamente
               en el otro dispositivo con un botón para copiarlo al portapapeles.
             </div>
           </div>
         </div>
       </div>
-      <div class="tip">
+      <div class="tip" data-i18n="help.text.tip">
         <strong>Tip alternativo:</strong> También puedes pegar (<code>Ctrl+V</code>) texto directamente
         en la pantalla principal sin abrir ningún panel — el texto se compartirá con toda tu red local.
       </div>
     </div>
 
     <div class="section">
-      <h2>Límites y requisitos</h2>
+      <h2 data-i18n="help.limits.title">Límites y requisitos</h2>
       <div class="table-wrap">
         <table class="limits">
           <thead>
             <tr>
-              <th>Parámetro</th>
-              <th>Valor</th>
+              <th data-i18n="help.limits.col1">Parámetro</th>
+              <th data-i18n="help.limits.col2">Valor</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Tamaño máximo por archivo</td>
+              <td data-i18n="help.limits.r1.label">Tamaño máximo por archivo</td>
               <td>500 MB</td>
             </tr>
             <tr>
-              <td>Longitud máxima de texto</td>
-              <td>10.000 caracteres</td>
+              <td data-i18n="help.limits.r2.label">Longitud máxima de texto</td>
+              <td data-i18n="help.limits.r2.val">10.000 caracteres</td>
             </tr>
             <tr>
-              <td>Dispositivos simultáneos</td>
-              <td>Sin límite (depende de tu red)</td>
+              <td data-i18n="help.limits.r3.label">Dispositivos simultáneos</td>
+              <td data-i18n="help.limits.r3.val">Sin límite (depende de tu red)</td>
             </tr>
             <tr>
-              <td>Navegadores soportados</td>
-              <td>Chrome, Firefox, Safari, Edge (versiones modernas)</td>
+              <td data-i18n="help.limits.r4.label">Navegadores soportados</td>
+              <td>Chrome, Firefox, Safari, Edge</td>
             </tr>
             <tr>
-              <td>Requisito de red</td>
-              <td>Misma red WiFi o LAN</td>
+              <td data-i18n="help.limits.r5.label">Requisito de red</td>
+              <td data-i18n="help.limits.r5.val">Misma red WiFi o LAN</td>
             </tr>
             <tr>
-              <td>Conexión a internet</td>
-              <td>Solo para cargar la app; la transferencia es local</td>
+              <td data-i18n="help.limits.r6.label">Conexión a internet</td>
+              <td data-i18n="help.limits.r6.val">Solo para cargar la app; la transferencia es local</td>
             </tr>
           </tbody>
         </table>
@@ -539,14 +558,14 @@
     </div>
 
     <div class="section">
-      <h2>Preguntas frecuentes</h2>
+      <h2 data-i18n="help.faq.title">Preguntas frecuentes</h2>
       <div class="faq">
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            ¿Por qué no veo otros dispositivos?
+            <span data-i18n="help.faq.q1">¿Por qué no veo otros dispositivos?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">
+          <div class="faq-a" data-i18n="help.faq.a1">
             Asegúrate de que ambos dispositivos estén conectados a la <strong>misma red WiFi</strong>.
             Algunas redes tienen el "aislamiento de cliente" activado (común en redes de hoteles o empresas),
             lo que impide que los dispositivos se vean entre sí. En ese caso, usa un punto de acceso personal
@@ -555,10 +574,10 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            ¿Mis archivos pasan por internet?
+            <span data-i18n="help.faq.q2">¿Mis archivos pasan por internet?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">
+          <div class="faq-a" data-i18n="help.faq.a2">
             No. La transferencia usa WebRTC P2P: los datos van directamente de un navegador al otro
             por tu red local. El servidor solo intercambia las señales de conexión inicial (SDP/ICE),
             que no contienen tus datos.
@@ -566,10 +585,10 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            ¿Funciona en iPhone / iOS?
+            <span data-i18n="help.faq.q3">¿Funciona en iPhone / iOS?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">
+          <div class="faq-a" data-i18n="help.faq.a3">
             Sí. Safari en iOS soporta WebRTC desde iOS 14.5. Abre la URL de InstantDrop en Safari y
             funcionará igual que en cualquier otro dispositivo. Para escanear el QR, puedes usar
             la cámara del iPhone directamente.
@@ -577,20 +596,20 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            ¿Puedo enviar varios archivos a la vez?
+            <span data-i18n="help.faq.q4">¿Puedo enviar varios archivos a la vez?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">
+          <div class="faq-a" data-i18n="help.faq.a4">
             Sí. Al abrir el selector de archivos puedes elegir múltiples archivos. También puedes
             arrastrar varios archivos a la vez sobre el área de drop. Se enviarán secuencialmente.
           </div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            ¿Qué pasa si cierro el navegador durante la transferencia?
+            <span data-i18n="help.faq.q5">¿Qué pasa si cierro el navegador durante la transferencia?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">
+          <div class="faq-a" data-i18n="help.faq.a5">
             La transferencia se interrumpirá. InstantDrop no tiene reanudación de transferencias — tendrás
             que volver a enviar el archivo desde el principio. Para archivos grandes, mantén ambas
             pantallas abiertas hasta que el proceso termine.
@@ -598,10 +617,10 @@
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="toggleFaq(this)">
-            ¿Los archivos recibidos se guardan en algún servidor?
+            <span data-i18n="help.faq.q6">¿Los archivos recibidos se guardan en algún servidor?</span>
             <span class="faq-icon">+</span>
           </button>
-          <div class="faq-a">
+          <div class="faq-a" data-i18n="help.faq.a6">
             No. El servidor de InstantDrop no almacena archivos ni texto. Los datos van directamente
             entre navegadores. El servidor solo mantiene en memoria la lista de dispositivos activos
             (emojis e IDs temporales) durante la sesión, y se borran cuando el dispositivo se desconecta.
@@ -618,29 +637,155 @@
 
     <div class="cta-block">
       <div class="cta-text">
-        <strong>Listo para empezar</strong>
-        Abre InstantDrop en dos dispositivos de tu red y transfiere tu primer archivo.
+        <strong data-i18n="help.cta.title">Listo para empezar</strong>
+        <span data-i18n="help.cta.desc">Abre InstantDrop en dos dispositivos de tu red y transfiere tu primer archivo.</span>
       </div>
-      <a class="btn-primary" href="/">Abrir InstantDrop →</a>
+      <a class="btn-primary" href="/" data-i18n="help.cta.btn">Abrir InstantDrop →</a>
     </div>
   </main>
 
   <footer>
     <div class="footer-links">
-      <a href="/">App</a>
-      <a href="/about.html">Acerca</a>
-      <a href="/help.html">Ayuda</a>
-      <a href="/privacy.html">Privacidad</a>
-      <a href="mailto:instantdropweb@gmail.com">Contacto</a>
+      <a href="/" data-i18n="footer.app">App</a>
+      <a href="/about.html" data-i18n="footer.about">Acerca</a>
+      <a href="/help.html" data-i18n="footer.help">Ayuda</a>
+      <a href="/privacy.html" data-i18n="footer.privacy">Privacidad</a>
+      <a href="mailto:instantdropweb@gmail.com" data-i18n="footer.contact">Contacto</a>
     </div>
-    <span class="footer-copy">InstantDrop · transferencia P2P local</span>
+    <span class="footer-copy" data-i18n="footer.copy">InstantDrop · transferencia P2P local</span>
   </footer>
 
   <script>
+    const TRANSLATIONS = {
+      es: {
+        'nav.app': 'app', 'nav.about': 'acerca', 'nav.help': 'ayuda', 'nav.privacy': 'privacidad',
+        'footer.app': 'App', 'footer.about': 'Acerca', 'footer.help': 'Ayuda',
+        'footer.privacy': 'Privacidad', 'footer.contact': 'Contacto',
+        'footer.copy': 'InstantDrop · transferencia P2P local',
+        'help.tag': 'guía de uso',
+        'help.h1': 'Cómo usar InstantDrop',
+        'help.lead': 'Transfiere archivos y texto entre tus dispositivos en segundos. No hace falta instalar nada, solo que ambos estén en la misma red WiFi.',
+        'help.send.title': 'Enviar un archivo',
+        'help.send.s1.title': 'Abre InstantDrop en ambos dispositivos',
+        'help.send.s1.desc': 'En el dispositivo destino, escanea el código QR con la cámara o escribe la dirección que aparece en el header (algo como <code>192.168.1.X:3000</code>). Ambos deben estar conectados al mismo WiFi.',
+        'help.send.s2.title': 'Selecciona el dispositivo destino',
+        'help.send.s2.desc': 'En la pantalla verás los dispositivos detectados en tu red representados por emojis. Toca el emoji del dispositivo al que quieres enviar — quedará marcado como "seleccionado".',
+        'help.send.s3.title': 'Elige el archivo',
+        'help.send.s3.desc': 'Pulsa el botón <code>+</code> para abrir el explorador de archivos, o arrastra el archivo directamente sobre el diamante central o sobre el emoji del dispositivo destino.',
+        'help.send.s4.title': 'El archivo llega automáticamente',
+        'help.send.s4.desc': 'El dispositivo receptor descargará el archivo automáticamente. Verás el progreso en tiempo real en ambas pantallas. El archivo nunca pasa por ningún servidor externo.',
+        'help.send.tip': '<strong>Tip:</strong> Puedes arrastrar múltiples archivos a la vez. Se enviarán uno por uno en el orden en que los seleccionaste.',
+        'help.text.title': 'Enviar texto',
+        'help.text.s1.title': 'Selecciona un dispositivo destino',
+        'help.text.s1.desc': 'Toca el emoji del dispositivo al que quieres enviar el texto.',
+        'help.text.s2.title': 'Abre el panel de texto',
+        'help.text.s2.desc': 'Pulsa el botón <code>¶</code> en el header, o toca el enlace "texto ¶" en la pantalla principal. Se abrirá un panel donde puedes escribir o pegar hasta 10.000 caracteres.',
+        'help.text.s3.title': 'Envía',
+        'help.text.s3.desc': 'Pulsa "enviar a la red" o usa <code>Ctrl + Enter</code>. El texto aparecerá instantáneamente en el otro dispositivo con un botón para copiarlo al portapapeles.',
+        'help.text.tip': '<strong>Tip alternativo:</strong> También puedes pegar (<code>Ctrl+V</code>) texto directamente en la pantalla principal sin abrir ningún panel — el texto se compartirá con toda tu red local.',
+        'help.limits.title': 'Límites y requisitos',
+        'help.limits.col1': 'Parámetro', 'help.limits.col2': 'Valor',
+        'help.limits.r1.label': 'Tamaño máximo por archivo',
+        'help.limits.r2.label': 'Longitud máxima de texto', 'help.limits.r2.val': '10.000 caracteres',
+        'help.limits.r3.label': 'Dispositivos simultáneos', 'help.limits.r3.val': 'Sin límite (depende de tu red)',
+        'help.limits.r4.label': 'Navegadores soportados',
+        'help.limits.r5.label': 'Requisito de red', 'help.limits.r5.val': 'Misma red WiFi o LAN',
+        'help.limits.r6.label': 'Conexión a internet', 'help.limits.r6.val': 'Solo para cargar la app; la transferencia es local',
+        'help.faq.title': 'Preguntas frecuentes',
+        'help.faq.q1': '¿Por qué no veo otros dispositivos?',
+        'help.faq.a1': 'Asegúrate de que ambos dispositivos estén conectados a la <strong>misma red WiFi</strong>. Algunas redes tienen el "aislamiento de cliente" activado (común en redes de hoteles o empresas), lo que impide que los dispositivos se vean entre sí. En ese caso, usa un punto de acceso personal o una red doméstica normal.',
+        'help.faq.q2': '¿Mis archivos pasan por internet?',
+        'help.faq.a2': 'No. La transferencia usa WebRTC P2P: los datos van directamente de un navegador al otro por tu red local. El servidor solo intercambia las señales de conexión inicial (SDP/ICE), que no contienen tus datos.',
+        'help.faq.q3': '¿Funciona en iPhone / iOS?',
+        'help.faq.a3': 'Sí. Safari en iOS soporta WebRTC desde iOS 14.5. Abre la URL de InstantDrop en Safari y funcionará igual que en cualquier otro dispositivo. Para escanear el QR, puedes usar la cámara del iPhone directamente.',
+        'help.faq.q4': '¿Puedo enviar varios archivos a la vez?',
+        'help.faq.a4': 'Sí. Al abrir el selector de archivos puedes elegir múltiples archivos. También puedes arrastrar varios archivos a la vez sobre el área de drop. Se enviarán secuencialmente.',
+        'help.faq.q5': '¿Qué pasa si cierro el navegador durante la transferencia?',
+        'help.faq.a5': 'La transferencia se interrumpirá. InstantDrop no tiene reanudación de transferencias — tendrás que volver a enviar el archivo desde el principio. Para archivos grandes, mantén ambas pantallas abiertas hasta que el proceso termine.',
+        'help.faq.q6': '¿Los archivos recibidos se guardan en algún servidor?',
+        'help.faq.a6': 'No. El servidor de InstantDrop no almacena archivos ni texto. Los datos van directamente entre navegadores. El servidor solo mantiene en memoria la lista de dispositivos activos (emojis e IDs temporales) durante la sesión, y se borran cuando el dispositivo se desconecta.',
+        'help.cta.title': 'Listo para empezar',
+        'help.cta.desc': 'Abre InstantDrop en dos dispositivos de tu red y transfiere tu primer archivo.',
+        'help.cta.btn': 'Abrir InstantDrop →',
+      },
+      en: {
+        'nav.app': 'app', 'nav.about': 'about', 'nav.help': 'help', 'nav.privacy': 'privacy',
+        'footer.app': 'App', 'footer.about': 'About', 'footer.help': 'Help',
+        'footer.privacy': 'Privacy', 'footer.contact': 'Contact',
+        'footer.copy': 'InstantDrop · local P2P transfer',
+        'help.tag': 'user guide',
+        'help.h1': 'How to use InstantDrop',
+        'help.lead': 'Transfer files and text between your devices in seconds. No installation needed — just make sure both are on the same WiFi network.',
+        'help.send.title': 'Send a file',
+        'help.send.s1.title': 'Open InstantDrop on both devices',
+        'help.send.s1.desc': 'On the destination device, scan the QR code with the camera or type the address shown in the header (something like <code>192.168.1.X:3000</code>). Both must be on the same WiFi.',
+        'help.send.s2.title': 'Select the destination device',
+        'help.send.s2.desc': 'On screen you\'ll see the devices detected on your network represented by emojis. Tap the emoji of the device you want to send to — it will be marked as "selected".',
+        'help.send.s3.title': 'Choose the file',
+        'help.send.s3.desc': 'Press the <code>+</code> button to open the file browser, or drag the file directly onto the central diamond or onto the destination device emoji.',
+        'help.send.s4.title': 'The file arrives automatically',
+        'help.send.s4.desc': 'The receiving device will download the file automatically. You\'ll see the progress in real time on both screens. The file never goes through any external server.',
+        'help.send.tip': '<strong>Tip:</strong> You can drag multiple files at once. They\'ll be sent one by one in the order you selected them.',
+        'help.text.title': 'Send text',
+        'help.text.s1.title': 'Select a destination device',
+        'help.text.s1.desc': 'Tap the emoji of the device you want to send the text to.',
+        'help.text.s2.title': 'Open the text panel',
+        'help.text.s2.desc': 'Press the <code>¶</code> button in the header, or tap the "text ¶" link on the main screen. A panel will open where you can write or paste up to 10,000 characters.',
+        'help.text.s3.title': 'Send',
+        'help.text.s3.desc': 'Press "send to network" or use <code>Ctrl + Enter</code>. The text will appear instantly on the other device with a button to copy it to the clipboard.',
+        'help.text.tip': '<strong>Alternative tip:</strong> You can also paste (<code>Ctrl+V</code>) text directly on the main screen without opening any panel — the text will be shared with your entire local network.',
+        'help.limits.title': 'Limits & requirements',
+        'help.limits.col1': 'Parameter', 'help.limits.col2': 'Value',
+        'help.limits.r1.label': 'Max file size',
+        'help.limits.r2.label': 'Max text length', 'help.limits.r2.val': '10,000 characters',
+        'help.limits.r3.label': 'Simultaneous devices', 'help.limits.r3.val': 'No limit (depends on your network)',
+        'help.limits.r4.label': 'Supported browsers',
+        'help.limits.r5.label': 'Network requirement', 'help.limits.r5.val': 'Same WiFi or LAN network',
+        'help.limits.r6.label': 'Internet connection', 'help.limits.r6.val': 'Only to load the app; transfer is local',
+        'help.faq.title': 'Frequently asked questions',
+        'help.faq.q1': 'Why can\'t I see other devices?',
+        'help.faq.a1': 'Make sure both devices are connected to the <strong>same WiFi network</strong>. Some networks have "client isolation" enabled (common in hotel or corporate networks), which prevents devices from seeing each other. In that case, use a personal hotspot or a home network.',
+        'help.faq.q2': 'Do my files go through the internet?',
+        'help.faq.a2': 'No. The transfer uses WebRTC P2P: data goes directly from one browser to the other over your local network. The server only exchanges the initial connection signals (SDP/ICE), which don\'t contain your data.',
+        'help.faq.q3': 'Does it work on iPhone / iOS?',
+        'help.faq.a3': 'Yes. Safari on iOS has supported WebRTC since iOS 14.5. Open the InstantDrop URL in Safari and it will work just like on any other device. To scan the QR, you can use the iPhone camera directly.',
+        'help.faq.q4': 'Can I send multiple files at once?',
+        'help.faq.a4': 'Yes. When opening the file selector you can choose multiple files. You can also drag several files at once onto the drop area. They\'ll be sent sequentially.',
+        'help.faq.q5': 'What happens if I close the browser during a transfer?',
+        'help.faq.a5': 'The transfer will be interrupted. InstantDrop does not support transfer resumption — you\'ll have to resend the file from the beginning. For large files, keep both screens open until the process finishes.',
+        'help.faq.q6': 'Are received files saved on any server?',
+        'help.faq.a6': 'No. The InstantDrop server does not store files or text. Data goes directly between browsers. The server only keeps in memory the list of active devices (emojis and temporary IDs) during the session, and they are deleted when the device disconnects.',
+        'help.cta.title': 'Ready to start',
+        'help.cta.desc': 'Open InstantDrop on two devices on your network and transfer your first file.',
+        'help.cta.btn': 'Open InstantDrop →',
+      }
+    };
+
+    const saved = localStorage.getItem('lang');
+    let currentLang = saved || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+
+    function applyLang(lang) {
+      document.documentElement.lang = lang;
+      const T = TRANSLATIONS[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (T[key] !== undefined) el.innerHTML = T[key];
+      });
+      document.getElementById('lang-btn').textContent = lang === 'es' ? 'EN' : 'ES';
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'es' ? 'en' : 'es');
+    }
+
     function toggleFaq(btn) {
       const item = btn.closest('.faq-item');
       item.classList.toggle('open');
     }
+
+    applyLang(currentLang);
   </script>
 </body>
 

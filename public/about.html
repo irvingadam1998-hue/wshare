@@ -59,6 +59,7 @@
     nav {
       display: flex;
       gap: 20px;
+      align-items: center;
     }
 
     nav a {
@@ -74,6 +75,23 @@
 
     nav a.active {
       color: var(--accent);
+    }
+
+    .lang-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .lang-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     main {
@@ -276,17 +294,18 @@
   <header>
     <a class="logo" href="/">InstantDrop</a>
     <nav>
-      <a href="/">app</a>
-      <a href="/about.html" class="active">acerca</a>
-      <a href="/help.html">ayuda</a>
-      <a href="/privacy.html">privacidad</a>
+      <a href="/" data-i18n="nav.app">app</a>
+      <a href="/about.html" class="active" data-i18n="nav.about">acerca</a>
+      <a href="/help.html" data-i18n="nav.help">ayuda</a>
+      <a href="/privacy.html" data-i18n="nav.privacy">privacidad</a>
+      <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
     </nav>
   </header>
 
   <main>
-    <div class="page-tag">sobre InstantDrop</div>
-    <h1>Comparte sin fricción,<br>sin la nube.</h1>
-    <p class="lead">
+    <div class="page-tag" data-i18n="about.tag">sobre InstantDrop</div>
+    <h1 data-i18n="about.h1">Comparte sin fricción,<br>sin la nube.</h1>
+    <p class="lead" data-i18n="about.lead">
       InstantDrop es una herramienta web gratuita para transferir archivos y texto entre cualquier dispositivo
       que esté en la misma red WiFi. No requiere instalar nada, no necesita cuenta, y tus archivos
       nunca pasan por ningún servidor externo.
@@ -300,77 +319,66 @@
     </div>
 
     <div class="section">
-      <h2>¿Qué puedes hacer?</h2>
+      <h2 data-i18n="about.features.title">¿Qué puedes hacer?</h2>
       <div class="feature-grid">
         <div class="feature-card">
           <div class="feature-icon">📁</div>
-          <div class="feature-title">Archivos hasta 500 MB</div>
-          <div class="feature-desc">Envía documentos, imágenes, videos y cualquier tipo de archivo directamente entre
-            dispositivos.</div>
+          <div class="feature-title" data-i18n="about.f1.title">Archivos hasta 500 MB</div>
+          <div class="feature-desc" data-i18n="about.f1.desc">Envía documentos, imágenes, videos y cualquier tipo de archivo directamente entre dispositivos.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">¶</div>
-          <div class="feature-title">Texto instantáneo</div>
-          <div class="feature-desc">Comparte fragmentos de texto, links o contraseñas sin escribir nada dos veces.</div>
+          <div class="feature-title" data-i18n="about.f2.title">Texto instantáneo</div>
+          <div class="feature-desc" data-i18n="about.f2.desc">Comparte fragmentos de texto, links o contraseñas sin escribir nada dos veces.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📱</div>
-          <div class="feature-title">Cualquier dispositivo</div>
-          <div class="feature-desc">Funciona en móvil, tablet y PC. Solo necesitas un navegador moderno.</div>
+          <div class="feature-title" data-i18n="about.f3.title">Cualquier dispositivo</div>
+          <div class="feature-desc" data-i18n="about.f3.desc">Funciona en móvil, tablet y PC. Solo necesitas un navegador moderno.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔒</div>
-          <div class="feature-title">100% privado</div>
-          <div class="feature-desc">Los archivos van directo de navegador a navegador. El servidor solo facilita la
-            conexión inicial.</div>
+          <div class="feature-title" data-i18n="about.f4.title">100% privado</div>
+          <div class="feature-desc" data-i18n="about.f4.desc">Los archivos van directo de navegador a navegador. El servidor solo facilita la conexión inicial.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
-          <div class="feature-title">Velocidad máxima</div>
-          <div class="feature-desc">Al ir directo por tu red local, la transferencia usa toda la velocidad de tu WiFi.
-          </div>
+          <div class="feature-title" data-i18n="about.f5.title">Velocidad máxima</div>
+          <div class="feature-desc" data-i18n="about.f5.desc">Al ir directo por tu red local, la transferencia usa toda la velocidad de tu WiFi.</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🌐</div>
-          <div class="feature-title">Sin instalación</div>
-          <div class="feature-desc">Abre la URL en el navegador y listo. No hay apps que descargar ni drivers que
-            instalar.</div>
+          <div class="feature-title" data-i18n="about.f6.title">Sin instalación</div>
+          <div class="feature-desc" data-i18n="about.f6.desc">Abre la URL en el navegador y listo. No hay apps que descargar ni drivers que instalar.</div>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2>Cómo funciona por dentro</h2>
-      <p>
+      <h2 data-i18n="about.how.title">Cómo funciona por dentro</h2>
+      <p data-i18n="about.how.p1">
         InstantDrop utiliza <strong style="color:var(--text)">WebRTC</strong> — la misma tecnología que usan
         videollamadas como Google Meet — para establecer un canal de datos cifrado directamente entre
         dos navegadores. El servidor web actúa únicamente como "intermediario de presentación": intercambia
         las direcciones de red de cada navegador para que puedan conectarse entre sí, pero <em>nunca
           recibe ni almacena los archivos</em>.
       </p>
-      <p>
+      <p data-i18n="about.how.p2">
         Una vez establecida la conexión P2P, los datos viajan cifrados de extremo a extremo por tu red
         local, sin salir a internet. Esto lo hace tanto más rápido como más seguro que cualquier solución
         basada en la nube.
       </p>
-      <!-- <div class="tech-row">
-        <span class="tech-badge">WebRTC DataChannel</span>
-        <span class="tech-badge">Server-Sent Events</span>
-        <span class="tech-badge">Node.js + Express</span>
-        <span class="tech-badge">P2P cifrado</span>
-        <span class="tech-badge">Sin base de datos</span>
-      </div> -->
     </div>
 
     <div class="section">
-      <h2>¿Para quién es útil?</h2>
-      <p>
+      <h2 data-i18n="about.who.title">¿Para quién es útil?</h2>
+      <p data-i18n="about.who.p1">
         Para cualquiera que trabaje con varios dispositivos: enviar una foto del móvil al PC,
         pasar un PDF al portátil de un compañero, compartir un link rápido sin usar WhatsApp o
         mandar un archivo al proyector de la sala de reuniones. Si tus dispositivos están en la
         misma red WiFi, InstantDrop lo conecta.
       </p>
-      <p>
+      <p data-i18n="about.who.p2">
         También es útil en entornos donde no se quiere depender de servicios en la nube — oficinas
         sin internet, redes corporativas restringidas, o simplemente cuando quieres que tus archivos
         no pasen por servidores de terceros.
@@ -385,23 +393,111 @@
 
     <div class="cta-block">
       <div class="cta-text">
-        <strong>Pruébalo ahora</strong>
-        Abre InstantDrop en dos dispositivos de tu red y transfiere tu primer archivo en segundos.
+        <strong data-i18n="about.cta.title">Pruébalo ahora</strong>
+        <span data-i18n="about.cta.desc">Abre InstantDrop en dos dispositivos de tu red y transfiere tu primer archivo en segundos.</span>
       </div>
-      <a class="btn-primary" href="/">Abrir InstantDrop →</a>
+      <a class="btn-primary" href="/" data-i18n="about.cta.btn">Abrir InstantDrop →</a>
     </div>
   </main>
 
   <footer>
     <div class="footer-links">
-      <a href="/">App</a>
-      <a href="/about.html">Acerca</a>
-      <a href="/help.html">Ayuda</a>
-      <a href="/privacy.html">Privacidad</a>
-      <a href="mailto:instantdropweb@gmail.com">Contacto</a>
+      <a href="/" data-i18n="footer.app">App</a>
+      <a href="/about.html" data-i18n="footer.about">Acerca</a>
+      <a href="/help.html" data-i18n="footer.help">Ayuda</a>
+      <a href="/privacy.html" data-i18n="footer.privacy">Privacidad</a>
+      <a href="mailto:instantdropweb@gmail.com" data-i18n="footer.contact">Contacto</a>
     </div>
-    <span class="footer-copy">InstantDrop · transferencia P2P local</span>
+    <span class="footer-copy" data-i18n="footer.copy">InstantDrop · transferencia P2P local</span>
   </footer>
+
+  <script>
+    const TRANSLATIONS = {
+      es: {
+        'nav.app': 'app', 'nav.about': 'acerca', 'nav.help': 'ayuda', 'nav.privacy': 'privacidad',
+        'footer.app': 'App', 'footer.about': 'Acerca', 'footer.help': 'Ayuda',
+        'footer.privacy': 'Privacidad', 'footer.contact': 'Contacto',
+        'footer.copy': 'InstantDrop · transferencia P2P local',
+        'about.tag': 'sobre InstantDrop',
+        'about.h1': 'Comparte sin fricción,<br>sin la nube.',
+        'about.lead': 'InstantDrop es una herramienta web gratuita para transferir archivos y texto entre cualquier dispositivo que esté en la misma red WiFi. No requiere instalar nada, no necesita cuenta, y tus archivos nunca pasan por ningún servidor externo.',
+        'about.features.title': '¿Qué puedes hacer?',
+        'about.f1.title': 'Archivos hasta 500 MB',
+        'about.f1.desc': 'Envía documentos, imágenes, videos y cualquier tipo de archivo directamente entre dispositivos.',
+        'about.f2.title': 'Texto instantáneo',
+        'about.f2.desc': 'Comparte fragmentos de texto, links o contraseñas sin escribir nada dos veces.',
+        'about.f3.title': 'Cualquier dispositivo',
+        'about.f3.desc': 'Funciona en móvil, tablet y PC. Solo necesitas un navegador moderno.',
+        'about.f4.title': '100% privado',
+        'about.f4.desc': 'Los archivos van directo de navegador a navegador. El servidor solo facilita la conexión inicial.',
+        'about.f5.title': 'Velocidad máxima',
+        'about.f5.desc': 'Al ir directo por tu red local, la transferencia usa toda la velocidad de tu WiFi.',
+        'about.f6.title': 'Sin instalación',
+        'about.f6.desc': 'Abre la URL en el navegador y listo. No hay apps que descargar ni drivers que instalar.',
+        'about.how.title': 'Cómo funciona por dentro',
+        'about.how.p1': 'InstantDrop utiliza <strong style="color:var(--text)">WebRTC</strong> — la misma tecnología que usan videollamadas como Google Meet — para establecer un canal de datos cifrado directamente entre dos navegadores. El servidor web actúa únicamente como "intermediario de presentación": intercambia las direcciones de red de cada navegador para que puedan conectarse entre sí, pero <em>nunca recibe ni almacena los archivos</em>.',
+        'about.how.p2': 'Una vez establecida la conexión P2P, los datos viajan cifrados de extremo a extremo por tu red local, sin salir a internet. Esto lo hace tanto más rápido como más seguro que cualquier solución basada en la nube.',
+        'about.who.title': '¿Para quién es útil?',
+        'about.who.p1': 'Para cualquiera que trabaje con varios dispositivos: enviar una foto del móvil al PC, pasar un PDF al portátil de un compañero, compartir un link rápido sin usar WhatsApp o mandar un archivo al proyector de la sala de reuniones. Si tus dispositivos están en la misma red WiFi, InstantDrop lo conecta.',
+        'about.who.p2': 'También es útil en entornos donde no se quiere depender de servicios en la nube — oficinas sin internet, redes corporativas restringidas, o simplemente cuando quieres que tus archivos no pasen por servidores de terceros.',
+        'about.cta.title': 'Pruébalo ahora',
+        'about.cta.desc': 'Abre InstantDrop en dos dispositivos de tu red y transfiere tu primer archivo en segundos.',
+        'about.cta.btn': 'Abrir InstantDrop →',
+      },
+      en: {
+        'nav.app': 'app', 'nav.about': 'about', 'nav.help': 'help', 'nav.privacy': 'privacy',
+        'footer.app': 'App', 'footer.about': 'About', 'footer.help': 'Help',
+        'footer.privacy': 'Privacy', 'footer.contact': 'Contact',
+        'footer.copy': 'InstantDrop · local P2P transfer',
+        'about.tag': 'about InstantDrop',
+        'about.h1': 'Share without friction,<br>without the cloud.',
+        'about.lead': 'InstantDrop is a free web tool to transfer files and text between any devices on the same WiFi network. No installation required, no account needed, and your files never go through any external server.',
+        'about.features.title': 'What can you do?',
+        'about.f1.title': 'Files up to 500 MB',
+        'about.f1.desc': 'Send documents, images, videos, and any file type directly between devices.',
+        'about.f2.title': 'Instant text',
+        'about.f2.desc': 'Share text snippets, links, or passwords without typing anything twice.',
+        'about.f3.title': 'Any device',
+        'about.f3.desc': 'Works on mobile, tablet, and PC. All you need is a modern browser.',
+        'about.f4.title': '100% private',
+        'about.f4.desc': 'Files go directly from browser to browser. The server only facilitates the initial connection.',
+        'about.f5.title': 'Maximum speed',
+        'about.f5.desc': 'Going directly over your local network, transfers use your full WiFi speed.',
+        'about.f6.title': 'No installation',
+        'about.f6.desc': 'Open the URL in a browser and you\'re ready. No apps to download, no drivers to install.',
+        'about.how.title': 'How it works under the hood',
+        'about.how.p1': 'InstantDrop uses <strong style="color:var(--text)">WebRTC</strong> — the same technology used by video calls like Google Meet — to establish an encrypted data channel directly between two browsers. The web server acts solely as a "matchmaker": it exchanges network addresses so the browsers can connect to each other, but <em>never receives or stores the files</em>.',
+        'about.how.p2': 'Once the P2P connection is established, data travels end-to-end encrypted over your local network, without going out to the internet. This makes it both faster and more secure than any cloud-based solution.',
+        'about.who.title': 'Who is it for?',
+        'about.who.p1': 'For anyone who works with multiple devices: sending a photo from your phone to your PC, passing a PDF to a colleague\'s laptop, sharing a quick link without using WhatsApp, or sending a file to the meeting room projector. If your devices are on the same WiFi network, InstantDrop connects them.',
+        'about.who.p2': 'Also useful in environments where you don\'t want to rely on cloud services — offices without internet, restricted corporate networks, or simply when you want your files not to pass through third-party servers.',
+        'about.cta.title': 'Try it now',
+        'about.cta.desc': 'Open InstantDrop on two devices on your network and transfer your first file in seconds.',
+        'about.cta.btn': 'Open InstantDrop →',
+      }
+    };
+
+    const saved = localStorage.getItem('lang');
+    let currentLang = saved || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+
+    function applyLang(lang) {
+      document.documentElement.lang = lang;
+      const T = TRANSLATIONS[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (T[key] !== undefined) el.innerHTML = T[key];
+      });
+      document.getElementById('lang-btn').textContent = lang === 'es' ? 'EN' : 'ES';
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'es' ? 'en' : 'es');
+    }
+
+    applyLang(currentLang);
+  </script>
 
 </body>
 

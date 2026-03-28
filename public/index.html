@@ -63,21 +63,18 @@
       gap: 10px;
     }
 
-    .my-badge {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 3px 9px 3px 5px;
-      font-size: 0.68rem;
-      color: var(--muted);
+    .device-bubble.me .device-ring {
+      border-color: var(--accent);
+      background: rgba(203, 255, 71, 0.08);
+      box-shadow: 0 0 0 3px rgba(203, 255, 71, 0.15);
     }
 
-    .my-badge .my-emoji {
-      font-size: 1rem;
-      line-height: 1;
+    .device-bubble.me .device-tag {
+      color: var(--accent);
+    }
+
+    .device-bubble.me {
+      cursor: default;
     }
 
     .ip-badge {
@@ -1208,6 +1205,23 @@
       transform: scale(1.02);
     }
 
+    .lang-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 7px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      height: 22px;
+    }
+    .lang-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
     /* ── Touch: eliminar highlight y delay táctil ── */
     button, .device-bubble, .file-pill, .clip-pill, .ip-badge, .ctrl-btn {
       -webkit-tap-highlight-color: transparent;
@@ -1294,8 +1308,8 @@
         transform: scale(0.72);
         margin: -37px 0;
       }
-      /* Ocultar etiqueta "yo" del badge, dejar solo el emoji */
-      .my-badge span:not(.my-emoji) {
+      /* placeholder (my-badge eliminado) */
+      ._unused {
         display: none;
       }
       .ctrl-btn {
@@ -1356,11 +1370,8 @@
   <header>
     <div class="logo">InstantDrop</div>
     <div class="header-right">
-      <div class="my-badge">
-        <span class="my-emoji" id="my-emoji">··</span>
-        <span style="font-family:'DM Mono',monospace;font-size:0.65rem;">yo</span>
-      </div>
       <div class="ip-badge" id="ip-badge" onclick="openQR()">···</div>
+      <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
       <button class="ctrl-btn" onclick="openQR()" title="QR" aria-label="Mostrar código QR">⊞</button>
       <button class="ctrl-btn" onclick="openText()" title="Compartir texto" aria-label="Compartir texto">¶</button>
       <button class="ctrl-btn accent" id="add-btn-header" onclick="onAddClick()" title="Enviar" aria-label="Enviar archivo">+</button>
@@ -1378,20 +1389,20 @@
       <div class="diamond"></div>
       <div class="center-icon">
         <div class="icon-box" id="center-icon-box">↑</div>
-        <span class="icon-label" id="center-label">Elige un dispositivo</span>
+        <span class="icon-label" id="center-label" data-i18n="app.choose_device">Elige un dispositivo</span>
       </div>
     </div>
 
     <!-- Dispositivos en la red -->
     <div class="devices-wrap" id="devices-wrap">
-      <div class="devices-label" id="devices-label">Buscando…</div>
+      <div class="devices-label" id="devices-label" data-i18n="app.searching">Buscando…</div>
       <div class="devices-row" id="devices-row"></div>
-      <div class="devices-tip">¿no ves tu dispositivo? recarga la página en ambos</div>
+      <div class="devices-tip" data-i18n="app.tip_reload">¿no ves tu dispositivo? recarga la página en ambos</div>
     </div>
 
     <!-- Hint + botón agregar -->
     <div class="hint-block">
-      <span class="hint-text"><span id="hint-static">elige un dispositivo</span> · <span style="color:var(--accent);opacity:0.7;cursor:pointer" onclick="openText()">Texto ¶</span></span>
+      <span class="hint-text"><span id="hint-static" data-i18n="app.choose_device">elige un dispositivo</span> · <span id="hint-text-link" style="color:var(--accent);opacity:0.7;cursor:pointer" onclick="openText()" data-i18n="app.text_link">Texto ¶</span></span>
       <button class="add-btn" id="add-btn" onclick="onAddClick()" aria-label="Enviar archivo">+</button>
     </div>
 
@@ -1401,14 +1412,14 @@
 
   <footer>
     <div class="footer-left">
-      <div class="stat-chip"><b id="stat-count">0</b> Recibidos</div>
-      <div class="stat-chip">máx <b>500mb</b></div>
+      <div class="stat-chip"><b id="stat-count">0</b> <span data-i18n="app.received">Recibidos</span></div>
+      <div class="stat-chip"><span data-i18n="app.max">máx</span> <b>500mb</b></div>
     </div>
     <nav class="footer-nav">
-      <a href="/about.html">Acerca</a>
-      <a href="/help.html">Ayuda</a>
-      <a href="/privacy.html">Privacidad</a>
-      <a href="mailto:instantdropweb@gmail.com">Contacto</a>
+      <a href="/about.html" data-i18n="footer.about">Acerca</a>
+      <a href="/help.html" data-i18n="footer.help">Ayuda</a>
+      <a href="/privacy.html" data-i18n="footer.privacy">Privacidad</a>
+      <a href="mailto:instantdropweb@gmail.com" data-i18n="footer.contact">Contacto</a>
     </nav>
   </footer>
 
@@ -1422,7 +1433,7 @@
         <span class="upload-pct" id="upload-pct">0%</span>
       </div>
       <span class="upload-label" id="upload-label">Enviando…</span>
-      <button class="upload-cancel" onclick="cancelTransfer()">cancelar</button>
+      <button class="upload-cancel" onclick="cancelTransfer()" data-i18n="app.cancel">cancelar</button>
     </div>
   </div>
 
@@ -1431,8 +1442,8 @@
     <div class="qr-box" onclick="event.stopPropagation()">
       <img id="qr-img" src="" alt="QR">
       <div class="qr-url"><a id="qr-url" href="#" target="_blank">Cargando…</a></div>
-      <p class="qr-hint">Abre esta URL en otro dispositivo.<br>Misma red WiFi requerida.</p>
-      <button class="btn-close" onclick="closeQR()">Cerrar</button>
+      <p class="qr-hint" data-i18n="app.qr_hint">Abre esta URL en otro dispositivo.<br>Misma red WiFi requerida.</p>
+      <button class="btn-close" onclick="closeQR()" data-i18n="app.close">Cerrar</button>
     </div>
   </div>
 
@@ -1440,15 +1451,15 @@
   <div id="recv-panel" onclick="closeRecv()">
     <div class="recv-box" onclick="event.stopPropagation()">
       <div class="recv-header">
-        <span class="recv-title">📋 texto recibido</span>
+        <span class="recv-title" data-i18n="app.recv_title">📋 texto recibido</span>
         <button class="btn-close" style="width:auto;padding:4px 10px;font-size:0.75rem" onclick="closeRecv()">✕</button>
       </div>
       <div class="recv-content" id="recv-content"></div>
       <button class="btn-copy-big" id="recv-copy-btn" onclick="copyRecv()">
         <span id="recv-copy-icon">⎘</span>
-        <span id="recv-copy-label">copiar texto</span>
+        <span id="recv-copy-label" data-i18n="app.copy_text">copiar texto</span>
       </button>
-      <button class="btn-close" onclick="closeRecv()">cerrar</button>
+      <button class="btn-close" onclick="closeRecv()" data-i18n="app.close_lower">cerrar</button>
     </div>
   </div>
 
@@ -1459,15 +1470,15 @@
         <span class="text-box-title" id="text-panel-title">enviar texto</span>
         <button class="btn-close" style="width:auto;padding:4px 10px;font-size:0.75rem" onclick="closeText()">✕</button>
       </div>
-      <textarea id="text-input" class="text-area" placeholder="escribe o pega el texto aquí…" maxlength="10000"
+      <textarea id="text-input" class="text-area" placeholder="escribe o pega el texto aquí…" data-i18n-ph="app.text_placeholder" maxlength="10000"
         rows="4"></textarea>
       <div style="display:flex;justify-content:flex-end">
         <span id="text-counter" style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted)">0 /
           10000</span>
       </div>
       <div class="text-actions">
-        <button class="btn-close" style="flex:none;width:auto;padding:10px 18px" onclick="closeText()">cancelar</button>
-        <button class="btn-send" id="text-send-btn" onclick="submitText()">enviar a la red</button>
+        <button class="btn-close" style="flex:none;width:auto;padding:10px 18px" onclick="closeText()" data-i18n="app.cancel">cancelar</button>
+        <button class="btn-send" id="text-send-btn" onclick="submitText()" data-i18n="app.send_to_net">enviar a la red</button>
       </div>
     </div>
   </div>
@@ -1480,13 +1491,13 @@
         <span class="incoming-arrow-icon">→</span>
         <span class="incoming-file-icon" id="incoming-file-icon">📁</span>
       </div>
-      <div class="incoming-title">¡te llegó algo!</div>
-      <div class="incoming-vibe" id="incoming-vibe">vaya a saber qué es esto 🎲</div>
+      <div class="incoming-title" data-i18n="app.incoming_title">¡te llegó algo!</div>
+      <div class="incoming-vibe" id="incoming-vibe" data-i18n="app.incoming_vibe_default">vaya a saber qué es esto 🎲</div>
       <div class="incoming-name" id="incoming-name">archivo</div>
       <div class="incoming-size" id="incoming-size">—</div>
       <div class="incoming-actions">
-        <button class="btn-reject" onclick="rejectIncoming()">😤 Nah</button>
-        <button class="btn-accept" onclick="acceptIncoming()">🎁 ¡Lo quiero!</button>
+        <button class="btn-reject" onclick="rejectIncoming()" data-i18n="app.reject">😤 Nah</button>
+        <button class="btn-accept" onclick="acceptIncoming()" data-i18n="app.accept">🎁 ¡Lo quiero!</button>
       </div>
     </div>
   </div>
@@ -1494,6 +1505,180 @@
   <div id="toast"></div>
 
   <script>
+    // ── i18n ──
+    const TRANSLATIONS = {
+      es: {
+        'app.me': 'yo', 'app.choose_device': 'elige un dispositivo',
+        'app.drag_or_tap': 'arrastra o toca +', 'app.ready': 'listo · arrastra o toca +',
+        'app.searching': 'Buscando…',
+        'app.no_devices': 'Ningún otro dispositivo en tu red',
+        'app.devices_one': 'dispositivo en tu red', 'app.devices_many': 'dispositivos en tu red',
+        'app.selected': 'seleccionado', 'app.send': 'enviar',
+        'app.tip_reload': '¿no ves tu dispositivo? recarga la página en ambos',
+        'app.text_link': 'Texto ¶',
+        'app.received': 'Recibidos', 'app.max': 'máx',
+        'footer.about': 'Acerca', 'footer.help': 'Ayuda',
+        'footer.privacy': 'Privacidad', 'footer.contact': 'Contacto',
+        'app.qr_hint': 'Abre esta URL en otro dispositivo.<br>Misma red WiFi requerida.',
+        'app.close': 'Cerrar', 'app.close_lower': 'cerrar',
+        'app.recv_title': '📋 texto recibido', 'app.copy_text': 'copiar texto',
+        'app.copied': 'copiado ✓',
+        'app.text_placeholder': 'escribe o pega el texto aquí…',
+        'app.cancel': 'cancelar', 'app.send_to_net': 'enviar a la red',
+        'app.incoming_title': '¡te llegó algo!',
+        'app.incoming_vibe_default': 'vaya a saber qué es esto 🎲',
+        'app.reject': '😤 Nah', 'app.accept': '🎁 ¡Lo quiero!',
+        // toasts
+        'toast.busy': 'hay una transferencia en progreso…',
+        'toast.choose_first': 'toca un dispositivo primero',
+        'toast.cancelled': 'transferencia cancelada',
+        'toast.no_connect': 'no se pudo conectar con el dispositivo',
+        'toast.rejected': 'el receptor rechazó el archivo 🚫',
+        'toast.proto_err': 'error de protocolo',
+        'toast.transfer_err': 'error en la transferencia',
+        'toast.text_sent': 'texto enviado ✓',
+        'toast.sent': 'enviado ✓',
+        'toast.sender_cancel': 'el remitente canceló el envío',
+        'toast.interrupted': 'transferencia interrumpida por el remitente',
+        'toast.downloading': 'descargando… 📥',
+        'toast.file_rejected': 'archivo rechazado 🗑️',
+        'toast.text_shared': 'texto compartido en la red',
+        'toast.copied_clip': 'copiado al portapapeles',
+        'toast.copy_fail': 'no se pudo copiar',
+        'toast.no_device': 'no hay dispositivo seleccionado',
+        'toast.oversized': 'archivo demasiado grande (máx 500 MB)',
+        // overlay
+        'overlay.connecting': 'conectando con dispositivo…',
+        'overlay.waiting': 'esperando confirmación…',
+        'overlay.sending': 'enviando',
+        'overlay.receiving': 'recibiendo',
+        // upload-cancel
+        'app.upload_cancel': 'cancelar',
+        // text panel title
+        'app.text_panel_title': 'enviar texto',
+        'app.text_panel_to': 'enviar texto a',
+        // file vibes
+        'vibe.pdf': 'parece documento importante... o no 🤷',
+        'vibe.doc': 'cuidado, puede tener tareas 😬',
+        'vibe.xls': 'números. muchos números 🔢',
+        'vibe.jpg': 'a ver qué fotazo te mandaron 👀',
+        'vibe.png': 'imagen misteriosa del espacio exterior 🌌',
+        'vibe.gif': 'definitivamente un meme 🐸',
+        'vibe.mp4': 'una peli para el finde 🍿',
+        'vibe.mp3': 'nueva canción para tu playlist 🎶',
+        'vibe.zip': 'caja sorpresa digital 🎁',
+        'vibe.rar': 'arqueología digital 🦕',
+        'vibe.exe': 'esto se ve MUY sospechoso 🚨',
+        'vibe.dmg': 'hmm... ¿de verdad confías? 🤔',
+        'vibe.txt': 'texto plano. minimalista. elegante 🧘',
+        'vibe.json': 'datos en crudo, para valientes 🤓',
+        'vibe.py': 'código python... espero que no sea skynet 🤖',
+        'vibe.js': 'javascript: el caos hecho arte 🎨',
+        'vibe.default': '¿qué será? vaya a saber 🎲',
+        'files.more': 'más',
+        'files.files': 'archivos',
+      },
+      en: {
+        'app.me': 'me', 'app.choose_device': 'choose a device',
+        'app.drag_or_tap': 'drag or tap +', 'app.ready': 'ready · drag or tap +',
+        'app.searching': 'Searching…',
+        'app.no_devices': 'No other devices on your network',
+        'app.devices_one': 'device on your network', 'app.devices_many': 'devices on your network',
+        'app.selected': 'selected', 'app.send': 'send',
+        'app.tip_reload': 'don\'t see your device? reload the page on both',
+        'app.text_link': 'Text ¶',
+        'app.received': 'Received', 'app.max': 'max',
+        'footer.about': 'About', 'footer.help': 'Help',
+        'footer.privacy': 'Privacy', 'footer.contact': 'Contact',
+        'app.qr_hint': 'Open this URL on another device.<br>Same WiFi network required.',
+        'app.close': 'Close', 'app.close_lower': 'close',
+        'app.recv_title': '📋 received text', 'app.copy_text': 'copy text',
+        'app.copied': 'copied ✓',
+        'app.text_placeholder': 'write or paste text here…',
+        'app.cancel': 'cancel', 'app.send_to_net': 'send to network',
+        'app.incoming_title': 'something arrived!',
+        'app.incoming_vibe_default': 'who knows what this is 🎲',
+        'app.reject': '😤 Nah', 'app.accept': '🎁 I want it!',
+        // toasts
+        'toast.busy': 'transfer in progress…',
+        'toast.choose_first': 'tap a device first',
+        'toast.cancelled': 'transfer cancelled',
+        'toast.no_connect': 'could not connect to device',
+        'toast.rejected': 'receiver rejected the file 🚫',
+        'toast.proto_err': 'protocol error',
+        'toast.transfer_err': 'transfer error',
+        'toast.text_sent': 'text sent ✓',
+        'toast.sent': 'sent ✓',
+        'toast.sender_cancel': 'sender cancelled the transfer',
+        'toast.interrupted': 'transfer interrupted by sender',
+        'toast.downloading': 'downloading… 📥',
+        'toast.file_rejected': 'file rejected 🗑️',
+        'toast.text_shared': 'text shared on the network',
+        'toast.copied_clip': 'copied to clipboard',
+        'toast.copy_fail': 'could not copy',
+        'toast.no_device': 'no device selected',
+        'toast.oversized': 'file too large (max 500 MB)',
+        // overlay
+        'overlay.connecting': 'connecting to device…',
+        'overlay.waiting': 'waiting for confirmation…',
+        'overlay.sending': 'sending',
+        'overlay.receiving': 'receiving',
+        // upload-cancel
+        'app.upload_cancel': 'cancel',
+        // text panel title
+        'app.text_panel_title': 'send text',
+        'app.text_panel_to': 'send text to',
+        // file vibes
+        'vibe.pdf': 'looks like an important document... maybe 🤷',
+        'vibe.doc': 'careful, might have homework 😬',
+        'vibe.xls': 'numbers. lots of numbers 🔢',
+        'vibe.jpg': 'let\'s see what photo they sent you 👀',
+        'vibe.png': 'mysterious image from outer space 🌌',
+        'vibe.gif': 'definitely a meme 🐸',
+        'vibe.mp4': 'a movie for the weekend 🍿',
+        'vibe.mp3': 'new song for your playlist 🎶',
+        'vibe.zip': 'digital surprise box 🎁',
+        'vibe.rar': 'digital archaeology 🦕',
+        'vibe.exe': 'this looks VERY suspicious 🚨',
+        'vibe.dmg': 'hmm... do you really trust this? 🤔',
+        'vibe.txt': 'plain text. minimalist. elegant 🧘',
+        'vibe.json': 'raw data, for the brave 🤓',
+        'vibe.py': 'python code... hope it\'s not skynet 🤖',
+        'vibe.js': 'javascript: chaos made art 🎨',
+        'vibe.default': 'who knows? 🎲',
+        'files.more': 'more',
+        'files.files': 'files',
+      }
+    };
+
+    const _saved = localStorage.getItem('lang');
+    let _lang = _saved || ((navigator.language || 'es').toLowerCase().startsWith('es') ? 'es' : 'en');
+    function t(key) { return TRANSLATIONS[_lang][key] || TRANSLATIONS['es'][key] || key; }
+
+    function applyLang(lang) {
+      _lang = lang;
+      document.documentElement.lang = lang;
+      const T = TRANSLATIONS[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (T[key] !== undefined) el.innerHTML = T[key];
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.dataset.i18nPh;
+        if (T[key] !== undefined) el.placeholder = T[key];
+      });
+      const btn = document.getElementById('lang-btn');
+      if (btn) btn.textContent = lang === 'es' ? 'EN' : 'ES';
+      localStorage.setItem('lang', lang);
+      // Update dynamic elements that are already rendered
+      updateCenterIcon(null, true);
+      updateHint();
+    }
+
+    function toggleLang() {
+      applyLang(_lang === 'es' ? 'en' : 'es');
+    }
+
     // ── Estado ──
     let myDeviceId = localStorage.getItem('InstantDrop-deviceId');
     let myToken = localStorage.getItem('InstantDrop-token');
@@ -1522,7 +1707,8 @@
       localStorage.setItem('InstantDrop-deviceId', myDeviceId);
       localStorage.setItem('InstantDrop-token', myToken);
       localStorage.setItem('InstantDrop-emoji', myEmoji);
-      document.getElementById('my-emoji').textContent = myEmoji;
+      const myEmojiEl = document.getElementById('my-emoji');
+      if (myEmojiEl) myEmojiEl.textContent = myEmoji;
     }
 
     // ── Heartbeat cada 10s ──
@@ -1565,22 +1751,28 @@
       const row = document.getElementById('devices-row');
       const label = document.getElementById('devices-label');
 
+      const meBubble = `
+        <div class="device-bubble me">
+          <div class="device-ring" id="my-emoji">${myEmoji}</div>
+          <span class="device-tag">${t('app.me')}</span>
+        </div>`;
+
       if (!devs.length) {
-        label.textContent = 'Ningún otro dispositivo en tu red';
-        row.innerHTML = '';
+        label.textContent = t('app.no_devices');
+        row.innerHTML = meBubble;
         return;
       }
 
-      label.textContent = `${devs.length} dispositivo${devs.length > 1 ? 's' : ''} en tu red`;
+      label.textContent = `${devs.length} ${t(devs.length > 1 ? 'app.devices_many' : 'app.devices_one')}`;
       devs.forEach(d => deviceEmojis.set(d.id, d.emoji));
-      row.innerHTML = devs.map(d => `
+      row.innerHTML = meBubble + devs.map(d => `
       <div class="device-bubble ${selectedId === d.id ? 'selected' : ''}"
            id="dev-${d.id}"
            data-id="${d.id}"
            data-emoji="${d.emoji}"
-           aria-label="Enviar a dispositivo ${d.emoji}">
+           aria-label="${d.emoji}">
         <div class="device-ring">${d.emoji}</div>
-        <span class="device-tag">${selectedId === d.id ? 'seleccionado' : 'enviar'}</span>
+        <span class="device-tag">${selectedId === d.id ? t('app.selected') : t('app.send')}</span>
       </div>
     `).join('');
 
@@ -1608,7 +1800,7 @@
         updateHint();
         document.querySelectorAll('.device-bubble').forEach(el => {
           el.classList.remove('selected');
-          el.querySelector('.device-tag').textContent = 'enviar';
+          el.querySelector('.device-tag').textContent = t('app.send');
         });
         return;
       }
@@ -1617,25 +1809,26 @@
       updateHint();
       document.querySelectorAll('.device-bubble').forEach(el => {
         el.classList.toggle('selected', el.id === 'dev-' + id);
-        el.querySelector('.device-tag').textContent = el.id === 'dev-' + id ? 'seleccionado' : 'enviar';
+        el.querySelector('.device-tag').textContent = el.id === 'dev-' + id ? t('app.selected') : t('app.send');
       });
     }
 
-    function updateCenterIcon(emoji) {
+    function updateCenterIcon(emoji, langChange) {
       const box = document.getElementById('center-icon-box');
       const label = document.getElementById('center-label');
-      if (emoji) {
-        box.textContent = emoji;
-        label.textContent = 'listo · arrastra o toca +';
+      const hasDevice = emoji || (langChange && selectedId);
+      if (hasDevice) {
+        if (emoji) box.textContent = emoji;
+        label.textContent = t('app.ready');
       } else {
         box.textContent = '↑';
-        label.textContent = 'elige un dispositivo';
+        label.textContent = t('app.choose_device');
       }
     }
 
     function updateHint() {
       const el = document.getElementById('hint-static');
-      if (el) el.textContent = selectedId ? 'arrastra o toca +' : 'elige un dispositivo';
+      if (el) el.textContent = selectedId ? t('app.drag_or_tap') : t('app.choose_device');
     }
 
     function setBusy(val) {
@@ -1650,13 +1843,13 @@
       pendingFiles.clear();
       pendingTexts.clear();
       hideOverlay();
-      toast('transferencia cancelada');
+      toast(t('toast.cancelled'));
     }
 
     // ── Botón + ──
     function onAddClick() {
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
-      if (!selectedId) { toast('toca un dispositivo primero'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
+      if (!selectedId) { toast(t('toast.choose_first')); return; }
       const input = document.getElementById('file-input');
       input.value = '';
       input.click();
@@ -1668,7 +1861,7 @@
       const oversized = files.filter(f => f.size > MAX_FILE_SIZE);
       if (oversized.length) {
         const names = oversized.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)`).join(', ');
-        toast(`archivo demasiado grande (máx 500 MB): ${names}`);
+        toast(`${t('toast.oversized')}: ${names}`);
         return false;
       }
       return true;
@@ -1681,10 +1874,10 @@
     zone.addEventListener('drop', e => {
       e.preventDefault();
       zone.classList.remove('drag-over');
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
       const files = [...e.dataTransfer.files];
       if (!files.length) return;
-      if (!selectedId) { toast('toca un dispositivo primero'); return; }
+      if (!selectedId) { toast(t('toast.choose_first')); return; }
       if (!validateFiles(files)) return;
       sendFiles(files, selectedId);
     });
@@ -1695,10 +1888,10 @@
     document.addEventListener('drop', e => {
       e.preventDefault();
       if (zone.contains(e.target)) return;
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
       const files = [...e.dataTransfer.files];
       if (!files.length) return;
-      if (!selectedId) { toast('toca un dispositivo primero'); return; }
+      if (!selectedId) { toast(t('toast.choose_first')); return; }
       if (!validateFiles(files)) return;
       sendFiles(files, selectedId);
     });
@@ -1715,7 +1908,7 @@
       e.preventDefault();
       e.stopPropagation();
       onDragLeave(id);
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
       const files = [...e.dataTransfer.files];
       if (!files.length) return;
       if (!validateFiles(files)) return;
@@ -1779,7 +1972,7 @@
             pendingFiles.delete(peerId);
             pendingTexts.delete(peerId);
             hideOverlay();
-            toast('no se pudo conectar con el dispositivo');
+            toast(t('toast.no_connect'));
             pc.close();
             peerConnections.delete(peerId);
           }
@@ -1793,13 +1986,13 @@
             } else if (msg.type === 'reject') {
               pendingFiles.delete(peerId);
               hideOverlay();
-              toast('el receptor rechazó el archivo 🚫');
+              toast(t('toast.rejected'));
               dc.close();
               setTimeout(() => { peerConnections.get(peerId)?.close(); peerConnections.delete(peerId); }, 800);
             }
-          } catch { hideOverlay(); toast('error de protocolo'); }
+          } catch { hideOverlay(); toast(t('toast.proto_err')); }
         };
-        dc.onerror = () => { clearTimeout(connTimeout); pendingFiles.delete(peerId); hideOverlay(); toast('error en la transferencia'); };
+        dc.onerror = () => { clearTimeout(connTimeout); pendingFiles.delete(peerId); hideOverlay(); toast(t('toast.transfer_err')); };
       } else {
         pc.ondatachannel = (e) => receiveOn(e.channel, peerId);
       }
@@ -1819,17 +2012,17 @@
       const files = [...e.target.files];
       e.target.value = '';
       if (!files.length) return;
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
-      if (!selectedId) { toast('no hay dispositivo seleccionado'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
+      if (!selectedId) { toast(t('toast.no_device')); return; }
       if (!validateFiles(files)) return;
       sendFiles(files, selectedId);
     });
 
     async function sendFiles(files, targetId) {
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
       setBusy(true);
       pendingFiles.set(targetId, files);
-      showOverlay('conectando con dispositivo…', '');
+      showOverlay(t('overlay.connecting'), '');
       const pc = createPC(targetId, true);
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
@@ -1837,10 +2030,10 @@
     }
 
     async function sendText(text, targetId) {
-      if (isBusy) { toast('hay una transferencia en progreso…'); return; }
+      if (isBusy) { toast(t('toast.busy')); return; }
       setBusy(true);
       pendingTexts.set(targetId, text);
-      showOverlay('conectando con dispositivo…', '');
+      showOverlay(t('overlay.connecting'), '');
       const pc = createPC(targetId, true);
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
@@ -1854,7 +2047,7 @@
         pendingTexts.delete(peerId);
         dc.send(JSON.stringify({ type: 'text', content: text }));
         hideOverlay();
-        toast('texto enviado ✓');
+        toast(t('toast.text_sent'));
         dc.close();
         setTimeout(() => { peerConnections.get(peerId)?.close(); peerConnections.delete(peerId); }, 800);
         return;
@@ -1863,7 +2056,7 @@
       // Archivos: primero pedir confirmación al receptor
       const files = pendingFiles.get(peerId) || [];
       if (!files.length) return;
-      showOverlay('esperando confirmación…', '⏳');
+      showOverlay(t('overlay.waiting'), '⏳');
       dc.send(JSON.stringify({
         type: 'request',
         files: files.map(f => ({ name: f.name, size: f.size }))
@@ -1881,7 +2074,7 @@
       dc.bufferedAmountLowThreshold = LOW_WATER;
 
       for (const file of files) {
-        showOverlay(`enviando ${file.name}`, '0%');
+        showOverlay(`${t('overlay.sending')} ${file.name}`, '0%');
         dc.send(JSON.stringify({ type: 'meta', name: file.name, size: file.size }));
 
         let offset = 0;
@@ -1907,7 +2100,7 @@
       }
 
       hideOverlay();
-      toast('enviado ✓');
+      toast(t('toast.sent'));
       // No cerrar dc aquí — el receptor lo cierra cuando termina de procesar
       setTimeout(() => { peerConnections.get(peerId)?.close(); peerConnections.delete(peerId); }, 4000);
     }
@@ -1924,11 +2117,11 @@
         if (_incomingDC === dc) {
           _incomingDC = null;
           document.getElementById('incoming-panel').classList.remove('open');
-          toast('el remitente canceló el envío');
+          toast(t('toast.sender_cancel'));
         } else if (state) {
           state = null;
           hideOverlay();
-          toast('transferencia interrumpida por el remitente');
+          toast(t('toast.interrupted'));
         }
       };
 
@@ -1950,7 +2143,7 @@
           if (msg.type === 'meta') {
             if (typeof msg.name !== 'string' || typeof msg.size !== 'number' || msg.size < 0) return;
             state = { name: msg.name, size: msg.size, chunks: [], got: 0 };
-            showOverlay(`recibiendo ${msg.name}`, '0%');
+            showOverlay(`${t('overlay.receiving')} ${msg.name}`, '0%');
           } else if (msg.type === 'done' && state) {
             const blob = new Blob(state.chunks);
             const url = URL.createObjectURL(blob);
@@ -1991,23 +2184,23 @@
 
     function getFileVibe(name) {
       const ext = name.split('.').pop().toLowerCase();
-      const vibes = {
-        pdf: 'parece documento importante... o no 🤷',
-        doc: 'cuidado, puede tener tareas 😬', docx: 'cuidado, puede tener tareas 😬',
-        xls: 'números. muchos números 🔢', xlsx: 'números. muchos números 🔢',
-        jpg: 'a ver qué fotazo te mandaron 👀', jpeg: 'a ver qué fotazo te mandaron 👀',
-        png: 'imagen misteriosa del espacio exterior 🌌',
-        gif: 'definitivamente un meme 🐸',
-        mp4: 'una peli para el finde 🍿', mov: 'una peli para el finde 🍿',
-        mp3: 'nueva canción para tu playlist 🎶', flac: 'nueva canción para tu playlist 🎶',
-        zip: 'caja sorpresa digital 🎁', rar: 'arqueología digital 🦕',
-        exe: 'esto se ve MUY sospechoso 🚨', dmg: 'hmm... ¿de verdad confías? 🤔',
-        txt: 'texto plano. minimalista. elegante 🧘',
-        json: 'datos en crudo, para valientes 🤓',
-        py: 'código python... espero que no sea skynet 🤖',
-        js: 'javascript: el caos hecho arte 🎨',
+      const vibeMap = {
+        pdf: 'vibe.pdf',
+        doc: 'vibe.doc', docx: 'vibe.doc',
+        xls: 'vibe.xls', xlsx: 'vibe.xls',
+        jpg: 'vibe.jpg', jpeg: 'vibe.jpg',
+        png: 'vibe.png',
+        gif: 'vibe.gif',
+        mp4: 'vibe.mp4', mov: 'vibe.mp4',
+        mp3: 'vibe.mp3', flac: 'vibe.mp3',
+        zip: 'vibe.zip', rar: 'vibe.rar',
+        exe: 'vibe.exe', dmg: 'vibe.dmg',
+        txt: 'vibe.txt',
+        json: 'vibe.json',
+        py: 'vibe.py',
+        js: 'vibe.js',
       };
-      return vibes[ext] || '¿qué será? vaya a saber 🎲';
+      return t(vibeMap[ext] || 'vibe.default');
     }
 
     function showIncomingRequest(dc, files, peerId) {
@@ -2018,9 +2211,9 @@
       document.getElementById('incoming-from').textContent = senderEmoji;
       document.getElementById('incoming-file-icon').textContent = getFileEmoji(first.name);
       document.getElementById('incoming-name').textContent =
-        files.length > 1 ? `${first.name} (+${files.length - 1} más)` : first.name;
+        files.length > 1 ? `${first.name} (+${files.length - 1} ${t('files.more')})` : first.name;
       document.getElementById('incoming-size').textContent =
-        formatSize(totalSize) + (files.length > 1 ? ` · ${files.length} archivos` : '');
+        formatSize(totalSize) + (files.length > 1 ? ` · ${files.length} ${t('files.files')}` : '');
       document.getElementById('incoming-vibe').textContent = getFileVibe(first.name);
       document.getElementById('incoming-panel').classList.add('open');
     }
@@ -2029,7 +2222,7 @@
       if (!_incomingDC) return;
       _incomingDC.send(JSON.stringify({ type: 'accept' }));
       document.getElementById('incoming-panel').classList.remove('open');
-      toast('descargando… 📥');
+      toast(t('toast.downloading'));
       _incomingDC = null;
     }
 
@@ -2040,7 +2233,7 @@
         _incomingDC = null;
       }
       document.getElementById('incoming-panel').classList.remove('open');
-      toast('archivo rechazado 🗑️');
+      toast(t('toast.file_rejected'));
     }
 
     function showOverlay(label, pct) {
@@ -2055,16 +2248,15 @@
 
     // ── Panel de texto ──
     function openText() {
-      if (!selectedId) { toast('toca un dispositivo primero'); return; }
+      if (!selectedId) { toast(t('toast.choose_first')); return; }
       const panel = document.getElementById('text-panel');
       const input = document.getElementById('text-input');
       input.value = '';
       updateTextCounter();
-      // Mostrar el emoji del dispositivo destino en el título
       const bubble = document.getElementById('dev-' + selectedId);
       const emoji = bubble ? bubble.querySelector('.device-ring')?.textContent : '';
       document.getElementById('text-panel-title').textContent =
-        emoji ? `enviar texto a ${emoji}` : 'enviar texto';
+        emoji ? `${t('app.text_panel_to')} ${emoji}` : t('app.text_panel_title');
       panel.classList.add('open');
       setTimeout(() => input.focus(), 80);
     }
@@ -2082,7 +2274,7 @@
     function submitText() {
       const text = document.getElementById('text-input').value.trim();
       if (!text) return;
-      if (!selectedId) { toast('toca un dispositivo primero'); return; }
+      if (!selectedId) { toast(t('toast.choose_first')); return; }
       closeText();
       sendText(text, selectedId);
     }
@@ -2094,7 +2286,7 @@
       // Resetear botón
       const btn = document.getElementById('recv-copy-btn');
       btn.classList.remove('copied');
-      document.getElementById('recv-copy-label').textContent = 'copiar texto';
+      document.getElementById('recv-copy-label').textContent = t('app.copy_text');
       document.getElementById('recv-copy-icon').textContent = '⎘';
       document.getElementById('recv-panel').classList.add('open');
     }
@@ -2105,10 +2297,10 @@
       navigator.clipboard.writeText(_recvText).then(() => {
         const btn = document.getElementById('recv-copy-btn');
         btn.classList.add('copied');
-        document.getElementById('recv-copy-label').textContent = 'copiado ✓';
+        document.getElementById('recv-copy-label').textContent = t('app.copied');
         document.getElementById('recv-copy-icon').textContent = '✓';
         setTimeout(() => closeRecv(), 900);
-      }).catch(() => toast('no se pudo copiar'));
+      }).catch(() => toast(t('toast.copy_fail')));
     }
 
     // Enviar con Ctrl+Enter desde el textarea
@@ -2129,7 +2321,7 @@
       }).then(r => r.json());
       if (res.error) { toast(res.error); return; }
       loadAll();
-      toast('texto compartido en la red');
+      toast(t('toast.text_shared'));
     });
 
     async function loadAll() {
@@ -2159,7 +2351,7 @@
     }
 
     function copyClip(text) {
-      navigator.clipboard.writeText(text).then(() => toast('copiado al portapapeles'));
+      navigator.clipboard.writeText(text).then(() => toast(t('toast.copied_clip')));
     }
     async function deleteClip(id) {
       await fetch(`/api/clips/${id}`, { method: 'DELETE' });
@@ -2239,6 +2431,7 @@
     });
 
     // ── Init ──
+    applyLang(_lang); // Apply saved language on load
     (async () => {
       await register();
       await loadQR();
