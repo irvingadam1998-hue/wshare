@@ -136,7 +136,7 @@ app.use((req, res, next) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://ivasquez.goatcounter.com https://www.google-analytics.com https://region1.google-analytics.com",
+      "connect-src 'self' https://ivasquez.goatcounter.com https://www.google-analytics.com https://region1.google-analytics.com https://countapi.mileshilliard.com",
       "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com",
       "object-src 'none'",
       "base-uri 'self'"
