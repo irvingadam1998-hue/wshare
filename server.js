@@ -131,13 +131,6 @@ app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
     [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://gc.zgo.at https://www.google-analytics.com https://static.cloudflareinsights.com https://*.adtrafficquality.google",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src https://fonts.gstatic.com",
-      "img-src 'self' data: https:",
-      "connect-src 'self' https://ivasquez.goatcounter.com https://www.google-analytics.com https://region1.google-analytics.com https://countapi.mileshilliard.com https://*.google.com https://*.adtrafficquality.google https://*.doubleclick.net https://*.googlesyndication.com https://cloudflareinsights.com",
-      "frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://googleads.g.doubleclick.net",
       "object-src 'none'",
       "base-uri 'self'"
     ].join('; ')
