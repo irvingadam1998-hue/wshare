@@ -145,12 +145,32 @@ const htmlCache = {};
   htmlCache[f] = fs.readFileSync(path.join(publicDir, f), 'utf8');
 });
 
+function getAnalyticsSnippet() {
+  if (!process.env.VERCEL) return '';
+  return [
+    '<script>',
+    'window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };',
+    '</script>',
+    '<script defer src="/_vercel/insights/script.js"></script>'
+  ].join('');
+}
+
+function getSpeedInsightsSnippet() {
+  if (!process.env.VERCEL) return '';
+  return [
+    '<script>',
+    'window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };',
+    '</script>',
+    '<script defer src="/_vercel/speed-insights/script.js"></script>'
+  ].join('');
+}
+
 function serveHtml(file) {
   return (req, res) => {
     const isProd = !!process.env.RAILWAY_PUBLIC_DOMAIN;
     const html   = htmlCache[file].replace(
       '<meta charset="UTF-8">',
-      `<meta charset="UTF-8"><script>window.__PROD__=${isProd}</script>`
+      `<meta charset="UTF-8"><script>window.__PROD__=${isProd}</script>${getAnalyticsSnippet()}${getSpeedInsightsSnippet()}`
     );
     res.type('html').send(html);
   };
