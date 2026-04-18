@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +17,8 @@
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "wrangler": "^4.83.0"
   }
 }
